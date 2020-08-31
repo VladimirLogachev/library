@@ -11,6 +11,66 @@ packages:
       sha256: dafb014d5cbb6b81f1a12da3e86b3378b4783bdd634b026dbec03b6c191dab4a
   original:
     hackage: postgresql-typed-0.6.1.2
+- completed:
+    hackage: mu-schema-0.3.0.0@sha256:1281c482e5e55538f818c99048df377e79e715fa837d296acbb9d27ead70c113,1619
+    pantry-tree:
+      size: 1061
+      sha256: c5eb54875cadc536814ce00194cdc1bcf4eeed73323adefe70501b0602f75f85
+  original:
+    hackage: mu-schema-0.3.0.0
+- completed:
+    hackage: mu-rpc-0.3.0.0@sha256:7a3767b8e656bf800fdfb5f17c887d4bff09a514f0e504d471859c4252ea6aab,1141
+    pantry-tree:
+      size: 378
+      sha256: 2565c04e69e3055f4c9a106247f8225b69c16cd3995ba2fea329ca669b01744f
+  original:
+    hackage: mu-rpc-0.3.0.0
+- completed:
+    hackage: mu-graphql-0.3.0.0@sha256:aa652a52891508a848aacbeb347588bc1e8e7436248a7ea766d03d881120bc38,1794
+    pantry-tree:
+      size: 914
+      sha256: 4af78430954f34aaf0929b79e4478f5f7091824b68fa651fb9453064d320512d
+  original:
+    hackage: mu-graphql-0.3.0.0
+- completed:
+    name: graphql-parser
+    version: 0.1.0.0
+    git: https://github.com/hasura/graphql-parser-hs.git
+    pantry-tree:
+      size: 1944
+      sha256: 842a54cedeedd772fa95cc64c6e6241c27fe39730be867876933128212be3428
+    commit: 1380495a7b3269b70a7ab3081d745a5f54171a9c
+  original:
+    git: https://github.com/hasura/graphql-parser-hs.git
+    commit: 1380495a7b3269b70a7ab3081d745a5f54171a9c
+- completed:
+    hackage: stm-containers-1.1.0.4@sha256:f83a683357b6e3b1dda3e70d2077a37224ed534df1f74c4e11f3f6daa7945c5b,3248
+    pantry-tree:
+      size: 761
+      sha256: 059c5a2d657d392aca0a887648f57380d6321734dc8879c056a44d4414308ac6
+  original:
+    hackage: stm-containers-1.1.0.4
+- completed:
+    hackage: stm-hamt-1.2.0.4@sha256:7957497c022554b7599e790696d1a3e56359ad99e5da36a251894c626ca1f60a,3970
+    pantry-tree:
+      size: 1009
+      sha256: d9a8be48da86bd4a2ba9d52ea29b9a74f1b686d439ba1bbfba04ab1a002391da
+  original:
+    hackage: stm-hamt-1.2.0.4
+- completed:
+    hackage: primitive-extras-0.8@sha256:fca0310150496867f5b9421fe1541ecda87fae17eae44885a29f9c52dd00c8ff,2963
+    pantry-tree:
+      size: 1105
+      sha256: e7c1d26202b80d1fca2ef780ec7fe76ede1275f4d9a996c6d44c08d8de1c45db
+  original:
+    hackage: primitive-extras-0.8
+- completed:
+    hackage: primitive-unlifted-0.1.3.0@sha256:a98f827740f5dcf097d885b3a47c32f4462204449620abc9d51b8c4f8619f9e6,1427
+    pantry-tree:
+      size: 420
+      sha256: c882dca2a96b98d02b0d21875b651edb11ac67d90e736c0de7a92c410a19eb7f
+  original:
+    hackage: primitive-unlifted-0.1.3.0
 snapshots:
 - completed:
     size: 532377

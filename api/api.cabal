@@ -4,17 +4,17 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 786be75e587dd0b4f9141b1f4217c8db235afac5fb87c2234d7f0c88fc245a73
+-- hash: 6989abf339e8ed2986dc6477ccc3ed025f447149831bd1448ce4eaa1e9ded9e0
 
 name:           api
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/api#readme>
-homepage:       https://github.com/githubuser/api#readme
-bug-reports:    https://github.com/githubuser/api/issues
-author:         Author name here
+description:    Please see the README on GitHub at <https://github.com/vladimirlogachev/library#readme>
+homepage:       https://github.com/vladimirlogachev/library#readme
+bug-reports:    https://github.com/vladimirlogachev/library/issues
+author:         Vladimir Logachev
 maintainer:     example@example.com
 copyright:      2020 Author name here
-license:        BSD3
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -23,7 +23,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/api
+  location: https://github.com/vladimirlogachev/library
 
 library
   exposed-modules:
@@ -35,11 +35,18 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , conduit
+    , mu-graphql
+    , mu-rpc
+    , mu-schema
     , network
     , postgresql-typed
+    , text
+    , wai-extra
+    , warp
   default-language: Haskell2010
 
-executable api-exe
+executable api
   main-is: Main.hs
   other-modules:
       Paths_api
@@ -49,8 +56,15 @@ executable api-exe
   build-depends:
       api
     , base >=4.7 && <5
+    , conduit
+    , mu-graphql
+    , mu-rpc
+    , mu-schema
     , network
     , postgresql-typed
+    , text
+    , wai-extra
+    , warp
   default-language: Haskell2010
 
 test-suite api-test
@@ -64,6 +78,13 @@ test-suite api-test
   build-depends:
       api
     , base >=4.7 && <5
+    , conduit
+    , mu-graphql
+    , mu-rpc
+    , mu-schema
     , network
     , postgresql-typed
+    , text
+    , wai-extra
+    , warp
   default-language: Haskell2010
