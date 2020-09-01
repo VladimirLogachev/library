@@ -16,7 +16,7 @@ Made with [mu-haskell] and [postgres-typed].
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  --data '{ "query": "{ books { author { name, books { author { name }, title } } title } }" }' \
+  --data '{ "query": "{ books { author { name }, title } }" }' \
   http://localhost:8080 | jq
 ```
 
