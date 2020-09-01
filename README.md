@@ -18,6 +18,18 @@ curl \
   -H "Content-Type: application/json" \
   --data '{ "query": "{ books { author { name }, title } }" }' \
   http://localhost:8080 | jq
+
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  --data '{ "query": "{ authors { books { title }, name } }" }' \
+  http://localhost:8080 | jq
+
+```
+
+generate schema
+```
+elm-graphql --schema-file schema.graphql --base Library --output generated/library
 ```
 
 [mu-haskell]: https://github.com/higherkindness/mu-haskell

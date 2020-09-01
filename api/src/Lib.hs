@@ -37,7 +37,7 @@ runSingleQuery q = alwaysOk $ do
   pgDisconnect c
   pure $ x
 
-graphql "ServiceDefinition" "schema.graphql" -- compile time schema introspection
+graphql "ServiceDefinition" "../schema/schema.graphql" -- compile time schema introspection
 
 serverMain :: IO ()
 serverMain = do
