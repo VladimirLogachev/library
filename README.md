@@ -27,10 +27,6 @@ curl \
 
 ```
 
-generate schema
-```
-elm-graphql --schema-file schema.graphql --base Library --output generated/library
-```
 
 [mu-haskell]: https://github.com/higherkindness/mu-haskell
 [postgres-typed]: https://github.com/dylex/postgresql-typed

@@ -1,0 +1,4 @@
+node_modules
+
+# Grapql generated
+src/Api

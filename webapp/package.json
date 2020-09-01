@@ -1,0 +1,14 @@
+{
+  "name": "webapp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "codegen": "elm-graphql --schema-file ../schema/schema.graphql --base Api --output src"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@dillonkearns/elm-graphql": "^4.0.3"
+  }
+}
