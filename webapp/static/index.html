@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link inline rel="stylesheet" href="./reset.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Elm main bundle -->
+    <script inline type="text/javascript" src="./bundle.js"></script>
+  </head>
+
+  <body>
+    <div id="elm-node"></div>
+    <!-- Elm init -->
+    <script>
+      Elm.Main.init({
+        node: document.getElementById("elm-node"),
+        flags: window.navigator.language
+      });
+    </script>
+
+  </body>
+</html>

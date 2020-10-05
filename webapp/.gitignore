@@ -1,4 +1,9 @@
+# Tooling
 node_modules
 
 # Grapql generated
-src/Api
+src/LibraryApi
+
+# Elm
+elm-stuff
+build
