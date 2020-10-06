@@ -48,8 +48,10 @@ graphql "ServiceDefinition" "../schema/schema.graphql" -- compile time schema in
 serverMain :: IO ()
 serverMain = do
   putStrLn "starting GraphQL server on port 8080"
-  runGraphQLAppQuery 8080 server (Proxy @"Query")
-
+  runGraphQLApp 8080 server  
+    (Proxy @('Just "Query"))
+    (Proxy @('Just "Mutation"))
+    (Proxy @Nothing)
 
 type ServiceMapping = '[
     "Book"   ':-> (Text, Text, Text)
@@ -68,6 +70,8 @@ server = resolver
   , object @"Query"
     ( method @"authors" allAuthors
     , method @"books"   allBooks )
+  , object @"Mutation"
+    ( method @"createAuthor" createAuthor )
   )
   where
     bookTitle :: (Text, Text, Text) -> ServerErrorIO Text
@@ -88,7 +92,7 @@ server = resolver
       FROM books INNER JOIN authors ON authors.id = books.author_id
       WHERE name = ${name}
     |]
-
+    
     allAuthors :: ServerErrorIO [Text]
     allAuthors = runSingleQuery [pgSQL| 
       SELECT name FROM authors
@@ -99,3 +103,11 @@ server = resolver
       SELECT name, title, cover_image_filename
       FROM books INNER JOIN authors ON authors.id = books.author_id
     |]
+
+    createAuthor :: Text -> ServerErrorIO Bool
+    createAuthor authorNm = do
+      runSingleQuery [pgSQL| 
+        INSERT INTO authors (name) VALUES (${authorNm})
+      |]
+      return True
+

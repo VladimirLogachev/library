@@ -23,16 +23,25 @@ Key feature: compile-time check against PostgreSQL db schema and GraphQL schema 
 1. run query:
 
 ```sh
+# Books
 curl \
   -X POST \
   -H "Content-Type: application/json" \
   --data '{ "query": "{ books { author { name }, title, coverImageUrl } }" }' \
   http://localhost:8080 | jq
 
+# Books by Author
 curl \
   -X POST \
   -H "Content-Type: application/json" \
   --data '{ "query": "{ authors { books { title, coverImageUrl }, name } }" }' \
+  http://localhost:8080 | jq
+
+# Create author
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  --data '{ "query": "mutation { createAuthor(authorName: \"Pyotr\") }" }' \
   http://localhost:8080 | jq
 
 ```

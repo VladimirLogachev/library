@@ -3,13 +3,17 @@ type Query {
   books: [Book!]!
 }
 
-type Book {
-  title: String!
-  coverImageUrl: String!
-  author: Author!
+type Mutation {
+  createAuthor(authorName: String!): Boolean!
 }
 
 type Author {
   name: String!
   books: [Book!]!
+}
+
+type Book {
+  title: String!
+  coverImageUrl: String!
+  author: Author!
 }

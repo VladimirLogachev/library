@@ -1,4 +1,4 @@
-INSERT INTO authors (NAME)
+INSERT INTO authors ("name")
     VALUES ('Айн Рэнд'), ('Алекс Бэнкс, Ева Порселло'), ('Евгений Моргунов');
 
 INSERT INTO books (title, cover_image_filename, author_id)
