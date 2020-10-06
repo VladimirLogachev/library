@@ -5,12 +5,12 @@ import Browser.Navigation as Nav
 import Graphql.Http
 import Graphql.Operation exposing (RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Html exposing (Html, a, div, h1, p, text)
-import Html.Attributes exposing (style)
+import Html exposing (Html, a, div, h1, img, p, text)
+import Html.Attributes exposing (src, style)
 import Json.Decode as D
 import LibraryApi.Object exposing (Author, Book)
 import LibraryApi.Object.Author as Author
-import LibraryApi.Object.Book as Book
+import LibraryApi.Object.Book as Book exposing (coverImageUrl)
 import LibraryApi.Query as Query
 import RemoteData exposing (RemoteData(..))
 import Url exposing (Url)
@@ -49,7 +49,10 @@ type alias Model =
 
 
 type alias BookData =
-    { title : String, author : String }
+    { title : String
+    , coverImageUrl : String
+    , author : String
+    }
 
 
 query : SelectionSet (List BookData) RootQuery
@@ -64,8 +67,9 @@ authorSelection =
 
 bookSelection : SelectionSet BookData Book
 bookSelection =
-    SelectionSet.map2 (\title author -> BookData title author)
+    SelectionSet.map3 BookData
         Book.title
+        Book.coverImageUrl
         (Book.author authorSelection)
 
 
@@ -118,12 +122,28 @@ showError err =
 viewBook : BookData -> Html Msg
 viewBook bookData =
     div
-        [ style "border" "1px solid #D6DBDF"
-        , style "border-radius" "5px"
-        , style "margin-bottom" "15px"
+        [ style "margin-bottom" "15px"
         , style "padding" "15px"
+        , style "width" "130px"
+        , style "flex-grow" "0"
+        , style "flex-shrink" "0"
         ]
-        [ p
+        [ div
+            [ style "display" "flex"
+            , style "flex-direction" "column"
+            , style "justify-content" "flex-end"
+            , style "align-items" "flex-start"
+            , style "height" "160px"
+            , style "margin-bottom" "15px"
+            ]
+            [ img
+                [ src bookData.coverImageUrl
+                , style "border" "1px solid #D6DBDF"
+                , style "border-radius" "4px"
+                ]
+                []
+            ]
+        , p
             [ style "color" "#2980B9"
             , style "margin-bottom" "5px"
             ]
@@ -148,7 +168,12 @@ showResult res =
                     , style "margin-bottom" "15px"
                     ]
                     [ text "Books" ]
-                , div [ style "max-width" "320px" ] <| List.map viewBook books
+                , div
+                    [ style "display" "flex"
+                    , style "flex-wrap" "wrap"
+                    ]
+                  <|
+                    List.map viewBook books
                 ]
 
         Failure err ->
