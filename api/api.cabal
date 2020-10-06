@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6989abf339e8ed2986dc6477ccc3ed025f447149831bd1448ce4eaa1e9ded9e0
+-- hash: 64c4e1926aefcf0469d19f86b75c7d15e43e8e2204b66a90edb5bccae0150557
 
 name:           api
 version:        0.1.0.0
@@ -29,6 +29,7 @@ library
   exposed-modules:
       Connect
       Lib
+      Schema
   other-modules:
       Paths_api
   hs-source-dirs:

@@ -4,12 +4,16 @@ type Query {
 }
 
 type Mutation {
-  createAuthor(authorName: String!): Boolean!
+  createAuthor(author: AuthorInput!): Boolean!
 }
 
 type Author {
   name: String!
   books: [Book!]!
+}
+
+input AuthorInput {
+  name: String!
 }
 
 type Book {

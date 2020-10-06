@@ -1,9 +1,6 @@
 {-# language DataKinds             #-}
-{-# language FlexibleContexts      #-}
 {-# language OverloadedStrings     #-}
 {-# language PartialTypeSignatures #-}
-{-# language PolyKinds             #-}
-{-# language ScopedTypeVariables   #-}
 {-# language TemplateHaskell       #-}
 {-# language TypeApplications      #-}
 {-# language TypeOperators         #-}
@@ -15,8 +12,10 @@ import Control.Monad
 import Data.Int (Int32)
 import Database.PostgreSQL.Typed
 import Database.PostgreSQL.Typed.Query
+import GHC.Generics
 
 import Connect
+import Schema
 
 import           Data.Proxy
 import Data.Text (Text)
@@ -43,8 +42,6 @@ runSingleQuery query = alwaysOk $ do
   pgDisconnect connection
   pure x
 
-graphql "ServiceDefinition" "../schema/schema.graphql" -- compile time schema introspection
-
 serverMain :: IO ()
 serverMain = do
   putStrLn "starting GraphQL server on port 8080"
@@ -58,7 +55,7 @@ type ServiceMapping = '[
   , "Author" ':-> Text
   ]
 
-server :: ServerT ServiceMapping ServiceDefinition ServerErrorIO _
+server :: ServerT ServiceMapping Library ServerErrorIO _
 server = resolver
   ( object @"Book"
     ( field  @"title"  bookTitle
@@ -104,10 +101,9 @@ server = resolver
       FROM books INNER JOIN authors ON authors.id = books.author_id
     |]
 
-    createAuthor :: Text -> ServerErrorIO Bool
-    createAuthor authorNm = do
+    createAuthor :: AuthorInput -> ServerErrorIO Bool
+    createAuthor AuthorInput { name = name } = do
       runSingleQuery [pgSQL| 
-        INSERT INTO authors (name) VALUES (${authorNm})
+        INSERT INTO authors (name) VALUES (${name})
       |]
       return True
-
