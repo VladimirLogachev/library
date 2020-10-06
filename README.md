@@ -26,13 +26,13 @@ Key feature: compile-time check against PostgreSQL db schema and GraphQL schema 
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  --data '{ "query": "{ books { author { name }, title } }" }' \
+  --data '{ "query": "{ books { author { name }, title, coverImageUrl } }" }' \
   http://localhost:8080 | jq
 
 curl \
   -X POST \
   -H "Content-Type: application/json" \
-  --data '{ "query": "{ authors { books { title }, name } }" }' \
+  --data '{ "query": "{ authors { books { title, coverImageUrl }, name } }" }' \
   http://localhost:8080 | jq
 
 ```

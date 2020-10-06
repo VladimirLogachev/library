@@ -5,6 +5,7 @@ type Query {
 
 type Book {
   title: String!
+  coverImageUrl: String!
   author: Author!
 }
 

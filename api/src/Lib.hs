@@ -30,12 +30,18 @@ import           Mu.Server
 
 useTPGDatabase db -- compile time connection
 
+staticFilesUrl :: Text
+staticFilesUrl = "https://vladimirlogachev.github.io/"
+
+coverImagesDirectory :: Text
+coverImagesDirectory = "images/library/"
+
 runSingleQuery :: PGSimpleQuery a -> ServerErrorIO [a]
-runSingleQuery q = alwaysOk $ do
-  c <- pgConnect db -- runtime connection
-  x <- pgQuery c $ q
-  pgDisconnect c
-  pure $ x
+runSingleQuery query = alwaysOk $ do
+  connection <- pgConnect db -- runtime connection
+  x <- pgQuery connection query
+  pgDisconnect connection
+  pure x
 
 graphql "ServiceDefinition" "../schema/schema.graphql" -- compile time schema introspection
 
@@ -46,7 +52,7 @@ serverMain = do
 
 
 type ServiceMapping = '[
-    "Book"   ':-> (Text, Text)
+    "Book"   ':-> (Text, Text, Text)
   , "Author" ':-> Text
   ]
 
@@ -54,6 +60,7 @@ server :: ServerT ServiceMapping ServiceDefinition ServerErrorIO _
 server = resolver
   ( object @"Book"
     ( field  @"title"  bookTitle
+    , field  @"coverImageUrl"  bookCoverImage
     , field  @"author" bookAuthor )
   , object @"Author"
     ( field  @"name"  authorName
@@ -63,18 +70,21 @@ server = resolver
     , method @"books"   allBooks )
   )
   where
-    bookTitle :: (Text, Text) -> ServerErrorIO Text
-    bookTitle (_, title) = pure title
+    bookTitle :: (Text, Text, Text) -> ServerErrorIO Text
+    bookTitle (_, title, _) = pure title
 
-    bookAuthor :: (Text, Text) -> ServerErrorIO Text
-    bookAuthor (auth, _) = pure auth
+    bookCoverImage :: (Text, Text, Text) -> ServerErrorIO Text
+    bookCoverImage (_, _, coverImage) = pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
+
+    bookAuthor :: (Text, Text, Text) -> ServerErrorIO Text
+    bookAuthor (authorName, _, _) = pure authorName
 
     authorName :: Text -> ServerErrorIO Text
     authorName = pure
 
-    authorBooks :: Text -> ServerErrorIO [(Text, Text)]
+    authorBooks :: Text -> ServerErrorIO [(Text, Text, Text)]
     authorBooks name = runSingleQuery [pgSQL| 
-      SELECT name, title
+      SELECT name, title, cover_image_filename
       FROM books INNER JOIN authors ON authors.id = books.author_id
       WHERE name = ${name}
     |]
@@ -84,8 +94,8 @@ server = resolver
       SELECT name FROM authors
     |]
 
-    allBooks :: ServerErrorIO [(Text, Text)]
+    allBooks :: ServerErrorIO [(Text, Text, Text)]
     allBooks = runSingleQuery [pgSQL| 
-      SELECT name, title
+      SELECT name, title, cover_image_filename
       FROM books INNER JOIN authors ON authors.id = books.author_id
     |]
