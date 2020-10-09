@@ -84,26 +84,30 @@ server = resolver
     authorName = pure
 
     authorBooks :: Text -> ServerErrorIO [(Text, Text, Text)]
-    authorBooks name = runSingleQuery [pgSQL| 
+    authorBooks name = runSingleQuery [pgSQL|
       SELECT name, title, cover_image_filename
       FROM books INNER JOIN authors ON authors.id = books.author_id
       WHERE name = ${name}
+      ORDER BY title
     |]
     
     allAuthors :: ServerErrorIO [Text]
-    allAuthors = runSingleQuery [pgSQL| 
+    allAuthors = runSingleQuery [pgSQL|
       SELECT name FROM authors
+      ORDER BY name
     |]
 
     allBooks :: ServerErrorIO [(Text, Text, Text)]
     allBooks = runSingleQuery [pgSQL| 
       SELECT name, title, cover_image_filename
       FROM books INNER JOIN authors ON authors.id = books.author_id
+      ORDER BY title
     |]
 
     createAuthor :: AuthorInput -> ServerErrorIO Bool
     createAuthor AuthorInput { name = name } = do
-      runSingleQuery [pgSQL| 
+      runSingleQuery [pgSQL|
         INSERT INTO authors (name) VALUES (${name})
       |]
       return True
+    
