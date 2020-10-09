@@ -1,20 +1,23 @@
 # TODO
 
-- композить добавление автора и его книг можно только в том случае, 
-  если есть query на поиск автора по имени или мутация создания автора возвращает его id (но это не очень-то CQS)
-- Добавить нормалную ошибку вместо Something went wrong
-- сделать специальные типы для ids, не просто Text
-- Добавить список авторов на фронт
-- сделать картинку опциональной
-- добавить все книги (пока что неудобно)
-- добавить состояния (занято, не занято)
-- добавить действия: такой-то пользователь взял книгу тогда-то (пока без мутаций, просто в базе)
-- добавить действия пользователей как мутации
-- добавить авторизацию
-- веб-сервер как spa
-- настроить CI и деплой
-- дизайн витрины и редактора в Figma
-- имплементация витрины и редактора в Haskell
-- имплементация в Elm
-- передавать graphqlUrl в ENV
-- добавить Unit как custom scalar value
+- return ids from DB for both books and authors
+- query: find author with exactly equal name (for better demo data loading function)
+- return meaningful error on backend (istead of "Something went wrong")
+- use distinct types for ids, not just Text
+- Add new design
+   - books by author
+   - better book states
+   - better categories
+   - rating/review
+   - subscribe/ask ("I want this" button)
+   - admin panel
+   - make cover art optional (also needs design)
+- add all new features from design to schema, back and front, one by one
+- add all the books
+- add authentication tokens (probably, GitHub auth for admin room)
+- containerize all the things
+- set up Circle CI
+- set up deployment to DigitalOcean
+- set up unit tests on CI
+- pass graphqlUrl as a flag to an Elm app
+- Add Unit type as a custom scalar (instead of meaningless booleans in return of mutations)
