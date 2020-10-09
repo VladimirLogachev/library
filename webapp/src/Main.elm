@@ -3,17 +3,26 @@ module Main exposing (main)
 import Browser
 import Browser.Navigation as Nav
 import Graphql.Http
-import Graphql.Operation exposing (RootQuery)
+import Graphql.Operation exposing (RootMutation, RootQuery)
 import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
-import Html exposing (Html, a, div, h1, img, p, text)
+import Html exposing (Html, a, button, div, h1, img, p, text)
 import Html.Attributes exposing (src, style)
+import Html.Events exposing (onClick)
 import Json.Decode as D
+import LibraryApi.InputObject exposing (AuthorInput)
+import LibraryApi.Mutation as Mutation exposing (CreateAuthorRequiredArguments)
 import LibraryApi.Object exposing (Author, Book)
 import LibraryApi.Object.Author as Author
 import LibraryApi.Object.Book as Book exposing (coverImageUrl)
 import LibraryApi.Query as Query
 import RemoteData exposing (RemoteData(..))
+import Task
 import Url exposing (Url)
+
+
+graphqlUrl : String
+graphqlUrl =
+    "http://localhost:8080"
 
 
 main : Program D.Value Model Msg
@@ -28,24 +37,15 @@ main =
         }
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        GotResponse response ->
-            ( response, Cmd.none )
-
-        _ ->
-            ( model, Cmd.none )
-
-
-type Msg
-    = GotResponse Model
-    | RouteChange Url
-    | OnUrlRequest Browser.UrlRequest
-
-
 type alias Model =
     RemoteData (Graphql.Http.Error (List BookData)) (List BookData)
+
+
+init : D.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    ( RemoteData.Loading
+    , fetchAllBooks
+    )
 
 
 type alias BookData =
@@ -53,11 +53,6 @@ type alias BookData =
     , coverImageUrl : String
     , author : String
     }
-
-
-query : SelectionSet (List BookData) RootQuery
-query =
-    Query.books bookSelection
 
 
 authorSelection : SelectionSet String Author
@@ -73,24 +68,81 @@ bookSelection =
         (Book.author authorSelection)
 
 
-graphqlUrl : String
-graphqlUrl =
-    "http://localhost:8080"
+allBooksQuery : SelectionSet (List BookData) RootQuery
+allBooksQuery =
+    Query.books bookSelection
 
 
-makeRequest : Cmd Msg
-makeRequest =
-    query
-        |> Graphql.Http.queryRequest
-            graphqlUrl
+fetchAllBooks : Cmd Msg
+fetchAllBooks =
+    allBooksQuery
+        |> Graphql.Http.queryRequest graphqlUrl
         |> Graphql.Http.send (RemoteData.fromResult >> GotResponse)
 
 
-init : D.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
-    ( RemoteData.Loading
-    , makeRequest
-    )
+createAuthorArgs : String -> CreateAuthorRequiredArguments
+createAuthorArgs =
+    CreateAuthorRequiredArguments << AuthorInput
+
+
+seedMutation : String -> SelectionSet Bool RootMutation
+seedMutation =
+    Mutation.createAuthor << createAuthorArgs
+
+
+registerAuthor : String -> Platform.Task (Graphql.Http.Error Bool) Bool
+registerAuthor =
+    seedMutation
+        >> Graphql.Http.mutationRequest graphqlUrl
+        >> Graphql.Http.toTask
+
+
+registerAuthorAndBooks : Cmd Msg
+registerAuthorAndBooks =
+    -- TODO: parametrize with name and books
+    registerAuthor "Айн Рэнд"
+        -- |> get id
+        -- |> write books as sequence
+        |> Task.andThen (\_ -> registerAuthor "Алекс Бэнкс, Ева Порселло")
+        |> Task.attempt (\_ -> GotSeedResponse)
+
+
+applySeed : Cmd Msg
+applySeed =
+    -- ceclare, map, run as a sequence
+    registerAuthorAndBooks
+
+
+
+--     Cmd.batch
+--         [ registerAuthor "Айн Рэнд" [...books]
+--         , registerAuthor "Алекс Бэнкс, Ева Порселло" [...books]
+--         , registerAuthor "Евгений Моргунов" [...books]
+--         ]
+
+
+type Msg
+    = GotResponse Model
+    | GotSeedResponse
+    | RouteChange Url
+    | OnUrlRequest Browser.UrlRequest
+    | SeedButtonClicked
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        GotResponse response ->
+            ( response, Cmd.none )
+
+        SeedButtonClicked ->
+            ( model, applySeed )
+
+        GotSeedResponse ->
+            ( model, Cmd.none )
+
+        _ ->
+            ( model, Cmd.none )
 
 
 {-| Show (potentially) nice error message
@@ -152,7 +204,7 @@ viewBook bookData =
         ]
 
 
-{-| Show query result
+{-| Show allBooksQuery result
 -}
 showResult : Model -> Html Msg
 showResult res =
@@ -192,6 +244,8 @@ view : Model -> Browser.Document Msg
 view model =
     let
         children =
-            showResult model
+            [ showResult model
+            , button [ onClick SeedButtonClicked ] [ text "Seed" ]
+            ]
     in
-    { title = "Lib", body = [ children ] }
+    { title = "Lib", body = children }
