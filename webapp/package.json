@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "codegen": "elm-graphql --schema-file ../schema/schema.graphql --base LibraryApi --output src",
-    "start": "rm -rf \"./build\" && cp -r \"./static\" \"./build\" && elm-live \"src/Main.elm\"  --dir=\"./build\"  --open  --port=8000  --pushstate  --start-page \"index.html\"  --  --output=\"./build/bundle.js\""
+    "start": "npm run codegen && rm -rf \"./build\" && cp -r \"./static\" \"./build\" && elm-live \"src/Main.elm\"  --dir=\"./build\"  --open  --port=8000  --pushstate  --start-page \"index.html\"  --  --output=\"./build/bundle.js\""
   },
   "author": "",
   "license": "ISC",

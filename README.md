@@ -15,8 +15,7 @@ Key feature: compile-time check against PostgreSQL db schema and GraphQL schema 
    1. dev build: `stack build --exec api --file-watch`
    1. prod build: `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/api`
 1. `cd webapp`
-   1. generate library for querying gql: `npm run codegen`
-   1. dev build: `npm start`
+   1. perform codegen, start dev-server, open in new tab: `npm start`
 
 ### Debug:
 

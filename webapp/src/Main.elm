@@ -113,18 +113,18 @@ applySeed =
     Task.sequence
         [ createAuthorAndBooks
             (AuthorInput "Айн Рэнд")
-            [ BookInput "Ночью 16 января; Идеал; Подумай дважды" "three_plays.jpg" 1
-            , BookInput "Источник" "the_fountainhead.jpg" 1
-            , BookInput "Атлант расправил плечи" "atlas_shrugged.jpg" 1
-            , BookInput "Гимн" "anthem.jpg" 1
+            [ BookInput "Ночью 16 января; Идеал; Подумай дважды" "three_plays_x2.jpg" 1
+            , BookInput "Источник" "the_fountainhead_x2.jpg" 1
+            , BookInput "Атлант расправил плечи" "atlas_shrugged_x2.jpg" 1
+            , BookInput "Гимн" "anthem_x2.jpg" 1
             ]
         , createAuthorAndBooks
             (AuthorInput "Алекс Бэнкс, Ева Порселло")
-            [ BookInput "GraphQL: язык запросов для современных веб-приложений" "graphql.jpg" 2
+            [ BookInput "GraphQL: язык запросов для современных веб-приложений" "graphql_x2.jpg" 2
             ]
         , createAuthorAndBooks
             (AuthorInput "Евгений Моргунов")
-            [ BookInput "PostgreSQL. Основы языка SQL" "postgres.jpg" 3
+            [ BookInput "PostgreSQL. Основы языка SQL" "postgres_x2.jpg" 3
             ]
         ]
         |> Task.mapError (Graphql.Http.mapError <| always ())
@@ -187,9 +187,9 @@ showError err =
 viewBook : BookData -> Html Msg
 viewBook bookData =
     div
-        [ style "margin-bottom" "15px"
-        , style "padding" "15px"
-        , style "width" "130px"
+        [ style "margin-bottom" "50px"
+        , style "margin-right" "50px"
+        , style "width" "200px"
         , style "flex-grow" "0"
         , style "flex-shrink" "0"
         ]
@@ -198,7 +198,7 @@ viewBook bookData =
             , style "flex-direction" "column"
             , style "justify-content" "flex-end"
             , style "align-items" "flex-start"
-            , style "height" "160px"
+            , style "height" "320px"
             , style "margin-bottom" "15px"
             ]
             [ img
@@ -208,12 +208,10 @@ viewBook bookData =
                 ]
                 []
             ]
-        , p
-            [ style "color" "#2980B9"
-            , style "margin-bottom" "5px"
-            ]
+        , p [ style "color" "#212121", style "font-size" "17px", style "margin-bottom" "14px" ]
+            [ text bookData.title ]
+        , p [ style "color" "#616161", style "font-size" "15px" ]
             [ text bookData.author ]
-        , p [] [ text bookData.title ]
         ]
 
 
@@ -225,20 +223,19 @@ showResult res =
         Success books ->
             div
                 [ style "padding" "15px"
-                , style "font-family" "sans-serif"
+                , style "font-family" "Merriweather, serif"
                 ]
                 [ h1
-                    [ style "font-weight" "600"
-                    , style "font-size" "32px"
+                    [ style "font-weight" "400"
+                    , style "font-size" "40px"
                     , style "margin-bottom" "15px"
+                    , style "margin-top" "25px"
+                    , style "color" "#212121"
                     ]
                     [ text "Books" ]
                 , div
-                    [ style "display" "flex"
-                    , style "flex-wrap" "wrap"
-                    ]
-                  <|
-                    List.map viewBook books
+                    [ style "display" "flex", style "flex-wrap" "wrap" ]
+                    (List.map viewBook books)
                 ]
 
         Failure err ->
