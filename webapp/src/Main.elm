@@ -2,27 +2,16 @@ module Main exposing (main)
 
 import Browser
 import Browser.Navigation as Nav
+import DemoData
+import Gql exposing (BookData)
 import Graphql.Http
-import Graphql.Operation exposing (RootMutation, RootQuery)
-import Graphql.SelectionSet as SelectionSet exposing (SelectionSet)
 import Html exposing (Html, a, button, div, h1, img, p, text)
 import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick)
 import Json.Decode as D
-import LibraryApi.InputObject exposing (AuthorInput, BookInput)
-import LibraryApi.Mutation as Mutation exposing (CreateAuthorRequiredArguments, CreateBookRequiredArguments)
-import LibraryApi.Object exposing (Author, Book)
-import LibraryApi.Object.Author as Author
-import LibraryApi.Object.Book as Book exposing (coverImageUrl)
-import LibraryApi.Query as Query
 import RemoteData exposing (RemoteData(..))
 import Task exposing (Task)
 import Url exposing (Url)
-
-
-graphqlUrl : String
-graphqlUrl =
-    "http://localhost:8080"
 
 
 main : Program D.Value Model Msg
@@ -44,100 +33,15 @@ type alias Model =
 init : D.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( RemoteData.Loading
-    , fetchAllBooksTask
-        |> Task.mapError (Graphql.Http.mapError <| always ())
-        |> Task.attempt (RemoteData.fromResult >> GotResponse)
+    , Gql.allBooks |> Task.attempt (RemoteData.fromResult >> GotResponse)
     )
-
-
-type alias BookData =
-    { title : String
-    , coverImageUrl : String
-    , author : String
-    }
-
-
-authorSelection : SelectionSet String Author
-authorSelection =
-    Author.name
-
-
-bookSelection : SelectionSet BookData Book
-bookSelection =
-    SelectionSet.map3 BookData
-        Book.title
-        Book.coverImageUrl
-        (Book.author authorSelection)
-
-
-allBooksQuery : SelectionSet (List BookData) RootQuery
-allBooksQuery =
-    Query.books bookSelection
-
-
-fetchAllBooksTask : Task (Graphql.Http.Error (List BookData)) (List BookData)
-fetchAllBooksTask =
-    allBooksQuery
-        |> Graphql.Http.queryRequest graphqlUrl
-        |> Graphql.Http.toTask
-
-
-createAuthorTask : AuthorInput -> Task (Graphql.Http.Error Bool) Bool
-createAuthorTask =
-    CreateAuthorRequiredArguments
-        >> Mutation.createAuthor
-        >> Graphql.Http.mutationRequest graphqlUrl
-        >> Graphql.Http.toTask
-
-
-createBookTask : BookInput -> Task (Graphql.Http.Error Bool) Bool
-createBookTask =
-    CreateBookRequiredArguments
-        >> Mutation.createBook
-        >> Graphql.Http.mutationRequest graphqlUrl
-        >> Graphql.Http.toTask
-
-
-{-| Helper function for development purposes
--}
-createAuthorAndBooks : AuthorInput -> List BookInput -> Task (Graphql.Http.Error Bool) (List Bool)
-createAuthorAndBooks author books =
-    createAuthorTask author
-        |> Task.andThen (\_ -> Task.sequence <| List.map createBookTask books)
-
-
-{-| Helper function for development purposes
--}
-applySeed : Cmd Msg
-applySeed =
-    Task.sequence
-        [ createAuthorAndBooks
-            (AuthorInput "Айн Рэнд")
-            [ BookInput "Ночью 16 января; Идеал; Подумай дважды" "three_plays_x2.jpg" 1
-            , BookInput "Источник" "the_fountainhead_x2.jpg" 1
-            , BookInput "Атлант расправил плечи" "atlas_shrugged_x2.jpg" 1
-            , BookInput "Гимн" "anthem_x2.jpg" 1
-            ]
-        , createAuthorAndBooks
-            (AuthorInput "Алекс Бэнкс, Ева Порселло")
-            [ BookInput "GraphQL: язык запросов для современных веб-приложений" "graphql_x2.jpg" 2
-            ]
-        , createAuthorAndBooks
-            (AuthorInput "Евгений Моргунов")
-            [ BookInput "PostgreSQL. Основы языка SQL" "postgres_x2.jpg" 3
-            ]
-        ]
-        |> Task.mapError (Graphql.Http.mapError <| always ())
-        |> Task.andThen (\_ -> Task.mapError (Graphql.Http.mapError <| always ()) fetchAllBooksTask)
-        |> Task.attempt (RemoteData.fromResult >> GotResponse)
 
 
 type Msg
     = GotResponse Model
-    | GotSeedResponse
     | RouteChange Url
     | OnUrlRequest Browser.UrlRequest
-    | SeedButtonClicked
+    | DemoDataButtonClicked
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -146,11 +50,8 @@ update msg model =
         GotResponse response ->
             ( response, Cmd.none )
 
-        SeedButtonClicked ->
-            ( model, applySeed )
-
-        GotSeedResponse ->
-            ( model, Cmd.none )
+        DemoDataButtonClicked ->
+            ( model, DemoData.loadDemoData |> Task.attempt (RemoteData.fromResult >> GotResponse) )
 
         _ ->
             ( model, Cmd.none )
@@ -255,7 +156,7 @@ view model =
     let
         children =
             [ showResult model
-            , button [ onClick SeedButtonClicked ] [ text "Seed" ]
+            , button [ onClick DemoDataButtonClicked ] [ text "Add some books (demo data)" ]
             ]
     in
     { title = "Lib", body = children }
