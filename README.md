@@ -1,77 +1,29 @@
 # Library
 
+GraphQL API and frontend for my offline library, implemented with [Haskell] and [Elm], using [mu-haskell], [postgres-typed] and [elm-graphql].
+
+Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (both backend and frontend).
+
+- [TODO]
+- [GraphQL queries] (with curl)
+
 ![app-preview]
 
-GraphAPI and frontend for Vladimir Logachev's offline library.
+## Setting up and running
 
-Made with [Haskell] and [Elm], using [mu-haskell], [postgres-typed] and [elm-graphql].
-
-Key feature: compile-time check against PostgreSQL db schema and GraphQL schema on both backend and frontend.
-
-## How to use
-
-1. run postgres via `docker-compose up -d`
+1. `docker-compose up -d` — run PostgreSQL
 1. `cd api`
-   1. dev build: `stack build --exec api --file-watch`
-   1. prod build: `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/api`
+   - `stack build --exec api --file-watch` — check schemas, run API server and watch for file changes
 1. `cd webapp`
-   1. perform codegen, start dev-server, open in new tab: `npm start`
+   - `npm i` — install dependencies
+   - `npm start` — generate query library from schema, start dev-server, open ([http://localhost:8000/](http://localhost:8000/)):
 
-### Debug:
+## Notes
 
-1. run query:
+1. `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/api` — API production build (later use in dockerfile)
 
-```sh
-# Books
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{ "query": "{ books { author { name }, title, coverImageUrl } }" }' \
-  http://localhost:8080 | jq
-
-# Books by Author
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{ "query": "{ authors { books { title, coverImageUrl }, name } }" }' \
-  http://localhost:8080 | jq
-
-# Create author
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "mutation($author: AuthorInput!) {
-      createAuthor(author: $author)
-    }",
-    "variables": {
-      "author": {
-        "name": "Greg"
-      }
-    }
-  }' \
-  http://localhost:8080 | jq
-
-# Create book
-curl \
-  -X POST \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "mutation($book: BookInput!) {
-      createBook(book: $book)
-    }",
-    "variables": {
-      "book": {
-        "title": "How to become rich while doing nothing",
-        "coverImageSourcePath": "da nikak",
-        "authorId": 1
-      }
-    }
-  }' \
-  http://localhost:8080 | jq
-
-```
-
+[todo]: TODO.md
+[graphql queries]: docs/queries.md
 [app-preview]: docs/app-preview.png
 [haskell]: https://www.haskell.org
 [elm]: https://elm-lang.org
