@@ -16,3 +16,13 @@ graphql "Library" "../schema/schema.graphql" -- compile time schema introspectio
 newtype AuthorInput = AuthorInput { name :: T.Text }
   deriving stock (Eq, Show, Generic)
   deriving anyclass (FromSchema LibrarySchema "AuthorInput")
+
+data BookInput = BookInput 
+  { title :: T.Text
+  , coverImageSourcePath :: T.Text
+  -- authorId: ID! - leads to Data.UUID.Types.Internal.UUID, 
+  -- leads to problem either with deriving or with TH and schema. Not sure.
+  , authorId :: Integer 
+  }
+  deriving stock (Eq, Show, Generic)
+  deriving anyclass (FromSchema LibrarySchema "BookInput")

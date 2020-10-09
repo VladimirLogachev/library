@@ -5,6 +5,7 @@ type Query {
 
 type Mutation {
   createAuthor(author: AuthorInput!): Boolean!
+  createBook(book: BookInput!): Boolean!
 }
 
 type Author {
@@ -14,6 +15,12 @@ type Author {
 
 input AuthorInput {
   name: String!
+}
+
+input BookInput {
+  title: String!
+  coverImageSourcePath: String!
+  authorId: Int!
 }
 
 type Book {

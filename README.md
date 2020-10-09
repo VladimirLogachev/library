@@ -53,6 +53,24 @@ curl \
   }' \
   http://localhost:8080 | jq
 
+# Create book
+curl \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "mutation($book: BookInput!) {
+      createBook(book: $book)
+    }",
+    "variables": {
+      "book": {
+        "title": "How to become rich while doing nothing",
+        "coverImageSourcePath": "da nikak",
+        "authorId": 1
+      }
+    }
+  }' \
+  http://localhost:8080 | jq
+
 ```
 
 [app-preview]: docs/app-preview.png

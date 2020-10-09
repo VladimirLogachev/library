@@ -1,7 +1,7 @@
 INSERT INTO authors ("name")
     VALUES ('Айн Рэнд'), ('Алекс Бэнкс, Ева Порселло'), ('Евгений Моргунов');
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'Ночью 16 января; Идеал; Подумай дважды',
     'three_plays.jpg',
@@ -11,7 +11,7 @@ FROM
 WHERE
     authors.name = 'Айн Рэнд';
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'Источник',
     'the_fountainhead.jpg',
@@ -21,7 +21,7 @@ FROM
 WHERE
     authors.name = 'Айн Рэнд';
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'Атлант расправил плечи',
     'atlas_shrugged.jpg',
@@ -31,7 +31,7 @@ FROM
 WHERE
     authors.name = 'Айн Рэнд';
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'Гимн',
     'anthem.jpg',
@@ -41,7 +41,7 @@ FROM
 WHERE
     authors.name = 'Айн Рэнд';
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'GraphQL: язык запросов для современных веб-приложений',
     'graphql.jpg',
@@ -51,7 +51,7 @@ FROM
 WHERE
     authors.name = 'Алекс Бэнкс, Ева Порселло';
 
-INSERT INTO books (title, cover_image_filename, author_id)
+INSERT INTO books (title, cover_image_source_path, author_id)
 SELECT
     'PostgreSQL. Основы языка SQL',
     'postgres.jpg',

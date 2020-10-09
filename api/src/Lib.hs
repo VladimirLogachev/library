@@ -68,24 +68,18 @@ server = resolver
     ( method @"authors" allAuthors
     , method @"books"   allBooks )
   , object @"Mutation"
-    ( method @"createAuthor" createAuthor )
+    ( method @"createAuthor" createAuthor
+    , method @"createBook" createBook )
   )
   where
-    bookTitle :: (Text, Text, Text) -> ServerErrorIO Text
-    bookTitle (_, title, _) = pure title
-
-    bookCoverImage :: (Text, Text, Text) -> ServerErrorIO Text
-    bookCoverImage (_, _, coverImage) = pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
-
-    bookAuthor :: (Text, Text, Text) -> ServerErrorIO Text
-    bookAuthor (authorName, _, _) = pure authorName
+    {- Authors -}
 
     authorName :: Text -> ServerErrorIO Text
     authorName = pure
 
     authorBooks :: Text -> ServerErrorIO [(Text, Text, Text)]
     authorBooks name = runSingleQuery [pgSQL|
-      SELECT name, title, cover_image_filename
+      SELECT name, title, cover_image_source_path
       FROM books INNER JOIN authors ON authors.id = books.author_id
       WHERE name = ${name}
       ORDER BY title
@@ -97,17 +91,36 @@ server = resolver
       ORDER BY name
     |]
 
-    allBooks :: ServerErrorIO [(Text, Text, Text)]
-    allBooks = runSingleQuery [pgSQL| 
-      SELECT name, title, cover_image_filename
-      FROM books INNER JOIN authors ON authors.id = books.author_id
-      ORDER BY title
-    |]
-
     createAuthor :: AuthorInput -> ServerErrorIO Bool
     createAuthor AuthorInput { name = name } = do
       runSingleQuery [pgSQL|
         INSERT INTO authors (name) VALUES (${name})
+      |]
+      return True
+
+    {- Books -}
+
+    bookTitle :: (Text, Text, Text) -> ServerErrorIO Text
+    bookTitle (_, title, _) = pure title
+
+    bookCoverImage :: (Text, Text, Text) -> ServerErrorIO Text
+    bookCoverImage (_, _, coverImage) = pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
+
+    bookAuthor :: (Text, Text, Text) -> ServerErrorIO Text
+    bookAuthor (authorName, _, _) = pure authorName
+
+    allBooks :: ServerErrorIO [(Text, Text, Text)]
+    allBooks = runSingleQuery [pgSQL| 
+      SELECT name, title, cover_image_source_path
+      FROM books INNER JOIN authors ON authors.id = books.author_id
+      ORDER BY title
+    |]
+
+    createBook :: BookInput -> ServerErrorIO Bool
+    createBook b = do
+      runSingleQuery [pgSQL|
+        INSERT INTO books (title, cover_image_source_path, author_id)
+        VALUES (${title b}, ${coverImageSourcePath b}, ${fromIntegral $ authorId b :: Int32})
       |]
       return True
     
