@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - ./db/1.init.sql:/docker-entrypoint-initdb.d/1.init.sql
-      - ./db/2.seed.sql:/docker-entrypoint-initdb.d/2.seed.sql
+      # - ./db/2.seed.sql:/docker-entrypoint-initdb.d/2.seed.sql
       # - ./db/data:/var/lib/postgresql/data
     ports:
       - "5432:5432"

@@ -9,14 +9,14 @@ import Html exposing (Html, a, button, div, h1, img, p, text)
 import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick)
 import Json.Decode as D
-import LibraryApi.InputObject exposing (AuthorInput)
-import LibraryApi.Mutation as Mutation exposing (CreateAuthorRequiredArguments)
+import LibraryApi.InputObject exposing (AuthorInput, BookInput)
+import LibraryApi.Mutation as Mutation exposing (CreateAuthorRequiredArguments, CreateBookRequiredArguments)
 import LibraryApi.Object exposing (Author, Book)
 import LibraryApi.Object.Author as Author
 import LibraryApi.Object.Book as Book exposing (coverImageUrl)
 import LibraryApi.Query as Query
 import RemoteData exposing (RemoteData(..))
-import Task
+import Task exposing (Task)
 import Url exposing (Url)
 
 
@@ -38,13 +38,15 @@ main =
 
 
 type alias Model =
-    RemoteData (Graphql.Http.Error (List BookData)) (List BookData)
+    RemoteData (Graphql.Http.Error ()) (List BookData)
 
 
 init : D.Value -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( RemoteData.Loading
-    , fetchAllBooks
+    , fetchAllBooksTask
+        |> Task.mapError (Graphql.Http.mapError <| always ())
+        |> Task.attempt (RemoteData.fromResult >> GotResponse)
     )
 
 
@@ -73,52 +75,61 @@ allBooksQuery =
     Query.books bookSelection
 
 
-fetchAllBooks : Cmd Msg
-fetchAllBooks =
+fetchAllBooksTask : Task (Graphql.Http.Error (List BookData)) (List BookData)
+fetchAllBooksTask =
     allBooksQuery
         |> Graphql.Http.queryRequest graphqlUrl
-        |> Graphql.Http.send (RemoteData.fromResult >> GotResponse)
+        |> Graphql.Http.toTask
 
 
-createAuthorArgs : String -> CreateAuthorRequiredArguments
-createAuthorArgs =
-    CreateAuthorRequiredArguments << AuthorInput
-
-
-seedMutation : String -> SelectionSet Bool RootMutation
-seedMutation =
-    Mutation.createAuthor << createAuthorArgs
-
-
-registerAuthor : String -> Platform.Task (Graphql.Http.Error Bool) Bool
-registerAuthor =
-    seedMutation
+createAuthorTask : AuthorInput -> Task (Graphql.Http.Error Bool) Bool
+createAuthorTask =
+    CreateAuthorRequiredArguments
+        >> Mutation.createAuthor
         >> Graphql.Http.mutationRequest graphqlUrl
         >> Graphql.Http.toTask
 
 
-registerAuthorAndBooks : Cmd Msg
-registerAuthorAndBooks =
-    -- TODO: parametrize with name and books
-    registerAuthor "Айн Рэнд"
-        -- |> get id
-        -- |> write books as sequence
-        |> Task.andThen (\_ -> registerAuthor "Алекс Бэнкс, Ева Порселло")
-        |> Task.attempt (\_ -> GotSeedResponse)
+createBookTask : BookInput -> Task (Graphql.Http.Error Bool) Bool
+createBookTask =
+    CreateBookRequiredArguments
+        >> Mutation.createBook
+        >> Graphql.Http.mutationRequest graphqlUrl
+        >> Graphql.Http.toTask
 
 
+{-| Helper function for development purposes
+-}
+createAuthorAndBooks : AuthorInput -> List BookInput -> Task (Graphql.Http.Error Bool) (List Bool)
+createAuthorAndBooks author books =
+    createAuthorTask author
+        |> Task.andThen (\_ -> Task.sequence <| List.map createBookTask books)
+
+
+{-| Helper function for development purposes
+-}
 applySeed : Cmd Msg
 applySeed =
-    -- ceclare, map, run as a sequence
-    registerAuthorAndBooks
-
-
-
---     Cmd.batch
---         [ registerAuthor "Айн Рэнд" [...books]
---         , registerAuthor "Алекс Бэнкс, Ева Порселло" [...books]
---         , registerAuthor "Евгений Моргунов" [...books]
---         ]
+    Task.sequence
+        [ createAuthorAndBooks
+            (AuthorInput "Айн Рэнд")
+            [ BookInput "Ночью 16 января; Идеал; Подумай дважды" "three_plays.jpg" 1
+            , BookInput "Источник" "the_fountainhead.jpg" 1
+            , BookInput "Атлант расправил плечи" "atlas_shrugged.jpg" 1
+            , BookInput "Гимн" "anthem.jpg" 1
+            ]
+        , createAuthorAndBooks
+            (AuthorInput "Алекс Бэнкс, Ева Порселло")
+            [ BookInput "GraphQL: язык запросов для современных веб-приложений" "graphql.jpg" 2
+            ]
+        , createAuthorAndBooks
+            (AuthorInput "Евгений Моргунов")
+            [ BookInput "PostgreSQL. Основы языка SQL" "postgres.jpg" 3
+            ]
+        ]
+        |> Task.mapError (Graphql.Http.mapError <| always ())
+        |> Task.andThen (\_ -> Task.mapError (Graphql.Http.mapError <| always ()) fetchAllBooksTask)
+        |> Task.attempt (RemoteData.fromResult >> GotResponse)
 
 
 type Msg
@@ -146,8 +157,10 @@ update msg model =
 
 
 {-| Show (potentially) nice error message
+I don't care about possibly recovered data,
+so keeping a Unit type there will fit my needs well.
 -}
-showError : Graphql.Http.Error (List BookData) -> String
+showError : Graphql.Http.Error () -> String
 showError err =
     case err of
         Graphql.Http.HttpError Graphql.Http.NetworkError ->
