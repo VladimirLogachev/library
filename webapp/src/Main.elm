@@ -106,6 +106,7 @@ viewBook bookData =
                 [ src bookData.coverImageUrl
                 , style "border" "1px solid #D6DBDF"
                 , style "border-radius" "4px"
+                , style "max-width" "200px"
                 ]
                 []
             ]
