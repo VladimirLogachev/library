@@ -30,10 +30,11 @@ import           Mu.Server
 useTPGDatabase db -- compile time connection
 
 staticFilesUrl :: Text
-staticFilesUrl = "https://vladimirlogachev.github.io/"
+staticFilesUrl = "https://raw.githubusercontent.com/"
+
 
 coverImagesDirectory :: Text
-coverImagesDirectory = "images/library/"
+coverImagesDirectory = "VladimirLogachev/vladimirlogachev.github.io/dev/static/images/library/"
 
 runSingleQuery :: PGSimpleQuery a -> ServerErrorIO [a]
 runSingleQuery query = alwaysOk $ do

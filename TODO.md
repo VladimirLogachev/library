@@ -1,5 +1,3 @@
-- refactor demo data function on the frontend
-
 - Add new design
    - books by author
    - better book states
