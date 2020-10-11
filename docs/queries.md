@@ -8,11 +8,12 @@ curl \
   -d '{
     "query": "{
       books {
-        author {
-          name
-        },
+        id
         title,
         coverImageUrl
+        author {
+          name
+        }
       }
     }" 
   }' \

@@ -1,6 +1,6 @@
 # Library
 
-GraphQL API and frontend for the next implementation of my offline library (there is also [previous Elm implementation] without backend), implemented with [Haskell] and [Elm], using [mu-haskell], [postgres-typed] and [elm-graphql].
+GraphQL API and frontend for the next implementation of my offline library, implemented with [Haskell] and [Elm], using [mu-haskell], [postgres-typed] and [elm-graphql]. _(there is also [previous implementation] in Elm without backend)_
 
 Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (both backend and frontend).
 
@@ -16,7 +16,7 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
    - `stack build --exec api --file-watch` — check schemas, run API server and watch for file changes
 1. `cd webapp`
    - `npm i` — install dependencies
-   - `npm start` — generate query library from schema, start dev-server, open ([http://localhost:8000/](http://localhost:8000/)):
+   - `npm start` — generate query library from schema, start dev-server, open [http://localhost:8000/](http://localhost:8000/):
 
 ## Notes
 
@@ -24,7 +24,7 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 
 [todo]: TODO.md
 [graphql queries]: docs/queries.md
-[previous elm implementation]: https://vladimirlogachev.github.io/#/en/library
+[previous implementation]: https://vladimirlogachev.github.io/#/en/library
 [app-preview]: docs/app-preview.png
 [haskell]: https://www.haskell.org
 [elm]: https://elm-lang.org

@@ -1,6 +1,8 @@
 # TODO
 
-- return ids from DB for both books and authors
+- return ids from DB for authors
+- make sure there is no need in deleting `.stack-work` after schema changes. Make it work so that compiler does not rely on cached output and reads the schema each time.
+- enforce usage of the `Int32` on gql schema types. No need in Integer
 - query: find author with exactly equal name (for better demo data loading function)
 - return meaningful error on backend (istead of "Something went wrong")
 - use distinct types for ids, not just Text

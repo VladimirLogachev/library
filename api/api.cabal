@@ -18,8 +18,8 @@ license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
-    README.md
     ChangeLog.md
+    ../schema/schema.graphql
 
 source-repository head
   type: git

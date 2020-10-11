@@ -24,6 +24,7 @@ input BookInput {
 }
 
 type Book {
+  id: Int!
   title: String!
   coverImageUrl: String!
   author: Author!
