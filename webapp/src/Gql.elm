@@ -45,7 +45,7 @@ allBooks =
         |> Task.mapError (Graphql.Http.mapError <| always ())
 
 
-createAuthorTask : AuthorInput -> Task (Graphql.Http.Error Bool) Bool
+createAuthorTask : AuthorInput -> Task (Graphql.Http.Error Int) Int
 createAuthorTask =
     CreateAuthorRequiredArguments
         >> Mutation.createAuthor
@@ -53,7 +53,7 @@ createAuthorTask =
         >> Graphql.Http.toTask
 
 
-createBookTask : BookInput -> Task (Graphql.Http.Error Bool) Bool
+createBookTask : BookInput -> Task (Graphql.Http.Error Int) Int
 createBookTask =
     CreateBookRequiredArguments
         >> Mutation.createBook

@@ -4,8 +4,8 @@ type Query {
 }
 
 type Mutation {
-  createAuthor(author: AuthorInput!): Boolean!
-  createBook(book: BookInput!): Boolean!
+  createAuthor(author: AuthorInput!): Int!
+  createBook(book: BookInput!): Int!
 }
 
 type Author {

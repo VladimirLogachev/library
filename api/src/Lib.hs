@@ -63,7 +63,7 @@ server = resolver
   ( object @"Book"
     ( field  @"id"  bookId
     , field  @"title"  bookTitle
-    , field  @"coverImageUrl"  bookCoverImage
+    , field  @"coverImageUrl"  bookCoverImageSourcePath
     , field  @"author" bookAuthor )
   , object @"Author"
     ( field  @"name"  authorName
@@ -83,24 +83,25 @@ server = resolver
 
     authorBooks :: Text -> ServerErrorIO [(Integer, Text, Text, Text)]
     authorBooks name = fmap toGraphqlBook <$> runSingleQuery [pgSQL|
-      SELECT books.id, title, cover_image_source_path, authors.name
-      FROM books INNER JOIN authors ON authors.id = books.author_id
+      SELECT book.id, title, cover_image_source_path, author.name
+      FROM book INNER JOIN author ON author.id = book.author_id
       WHERE name = ${name}
       ORDER BY title
     |]
     
     allAuthors :: ServerErrorIO [Text]
     allAuthors = runSingleQuery [pgSQL|
-      SELECT name FROM authors
+      SELECT name FROM author
       ORDER BY name
     |]
 
-    createAuthor :: AuthorInput -> ServerErrorIO Bool
+    createAuthor :: AuthorInput -> ServerErrorIO Integer
     createAuthor AuthorInput { name = name } = do
-      runSingleQuery [pgSQL|
-        INSERT INTO authors (name) VALUES (${name})
-      |]
-      return True
+      Just x:_ <- runSingleQuery [pgSQL|
+        INSERT INTO author (name) VALUES (${name})
+        RETURNING author.id
+      |] :: ServerErrorIO [Maybe Int32]
+      return $ toInteger x
 
     {- Book -}
 
@@ -110,24 +111,26 @@ server = resolver
     bookTitle :: (Integer, Text, Text, Text) -> ServerErrorIO Text
     bookTitle (id, title, coverImage, authorName) = pure title
 
-    bookCoverImage :: (Integer, Text, Text, Text) -> ServerErrorIO Text
-    bookCoverImage (id, title, coverImage, authorName) = pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
+    bookCoverImageSourcePath :: (Integer, Text, Text, Text) -> ServerErrorIO Text
+    bookCoverImageSourcePath (id, title, coverImage, authorName) = 
+      pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
 
     bookAuthor :: (Integer, Text, Text, Text) -> ServerErrorIO Text
     bookAuthor (id, title, coverImage, authorName) = pure authorName
 
     allBooks :: ServerErrorIO [(Integer, Text, Text, Text)]
     allBooks = fmap toGraphqlBook <$> runSingleQuery [pgSQL| 
-      SELECT books.id, title, cover_image_source_path, authors.name
-      FROM books INNER JOIN authors ON authors.id = books.author_id
+      SELECT book.id, title, cover_image_source_path, author.name
+      FROM book INNER JOIN author ON author.id = book.author_id
       ORDER BY title
     |]
 
-    createBook :: BookInput -> ServerErrorIO Bool
+    createBook :: BookInput -> ServerErrorIO Integer
     createBook b = do
-      runSingleQuery [pgSQL|
-        INSERT INTO books (title, cover_image_source_path, author_id)
+      Just x:_ <- runSingleQuery [pgSQL|
+        INSERT INTO book (title, cover_image_source_path, author_id)
         VALUES (${title b}, ${coverImageSourcePath b}, ${fromIntegral $ authorId b :: Int32})
-      |]
-      return True
+        RETURNING book.id
+      |] :: ServerErrorIO [Maybe Int32]
+      return $ toInteger x
     

@@ -6,7 +6,7 @@ import LibraryApi.InputObject exposing (AuthorInput, BookInput)
 import Task exposing (Task)
 
 
-createAuthorAndBooks : AuthorInput -> List BookInput -> Task (Graphql.Http.Error Bool) (List Bool)
+createAuthorAndBooks : AuthorInput -> List BookInput -> Task (Graphql.Http.Error Int) (List Int)
 createAuthorAndBooks author books =
     Gql.createAuthorTask author
         |> Task.andThen (\_ -> Task.sequence <| List.map Gql.createBookTask books)

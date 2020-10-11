@@ -1,26 +1,26 @@
-CREATE TABLE IF NOT EXISTS authors (
+CREATE TABLE IF NOT EXISTS author (
     id serial NOT NULL PRIMARY KEY,
     "name" varchar NOT NULL,
     UNIQUE ("name")
 );
 
-COMMENT ON TABLE authors IS 'Book authors';
+COMMENT ON TABLE author IS 'Book authors';
 
-COMMENT ON COLUMN authors.name IS 'Author name';
+COMMENT ON COLUMN author.name IS 'Author name';
 
-CREATE TABLE IF NOT EXISTS books (
+CREATE TABLE IF NOT EXISTS book (
     id serial NOT NULL PRIMARY KEY,
     "title" varchar NOT NULL,
     "cover_image_source_path" varchar NOT NULL,
-    "author_id" integer REFERENCES authors (id) NOT NULL,
+    "author_id" integer REFERENCES author (id) NOT NULL,
     UNIQUE ("title", "author_id")
 );
 
-COMMENT ON TABLE books IS 'Books';
+COMMENT ON TABLE book IS 'Books';
 
-COMMENT ON COLUMN books.title IS 'Book title';
+COMMENT ON COLUMN book.title IS 'Book title';
 
-COMMENT ON COLUMN books.author_id IS 'Book author';
+COMMENT ON COLUMN book.author_id IS 'Book author';
 
-COMMENT ON COLUMN books.cover_image_source_path IS 'Path to original book cover image file (relative to bucket and static directory)';
+COMMENT ON COLUMN book.cover_image_source_path IS 'Path to original book cover image file (relative to bucket and static directory)';
 
