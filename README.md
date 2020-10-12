@@ -5,7 +5,8 @@ GraphQL API and frontend for the next implementation of my offline library, impl
 Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (both backend and frontend).
 
 - [TODO]
-- [GraphQL queries] (with curl)
+- [GraphQL queries] (curl)
+- [UI design] (Figma, work in progress)
 
 ![app-preview]
 
@@ -24,6 +25,7 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 
 [todo]: TODO.md
 [graphql queries]: docs/queries.md
+[UI design]: https://www.figma.com/file/g61ihnvBgnQtba3vfv8Rxo/Library
 [previous implementation]: https://vladimirlogachev.github.io/#/en/library
 [app-preview]: docs/app-preview.png
 [haskell]: https://www.haskell.org

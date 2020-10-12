@@ -19,6 +19,8 @@
 - set up deployment to DigitalOcean
 - set up unit tests on CI
 - add authentication tokens (probably, GitHub auth for admin room)
+- research on Nix
+- research on Hashicorp Vault
 
 - make sure there is no need in deleting `.stack-work` after schema changes. Make it work so that compiler does not rely on cached output and reads the schema each time.
 - enforce usage of the `Int32` on Graphql schema types. No need in Integer
