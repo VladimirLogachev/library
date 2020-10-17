@@ -1,9 +1,8 @@
 # TODO
 
+- update to modern GHC
 - update to mu 0.4
-- убрать issue на GH
-- поправить доки на example
-- проверить, как генерится АДТ
+- try to use union types with mu-haskell
 
 ## New frontend
 
