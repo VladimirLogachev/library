@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 64c4e1926aefcf0469d19f86b75c7d15e43e8e2204b66a90edb5bccae0150557
+-- hash: c2f22c7501383af0ec4a5fc312b70132e652907c17ef646238a76d13a93d5081
 
 name:           api
 version:        0.1.0.0
@@ -17,9 +17,6 @@ copyright:      2020 Author name here
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
-extra-source-files:
-    ChangeLog.md
-    ../schema/schema.graphql
 
 source-repository head
   type: git
