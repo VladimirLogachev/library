@@ -8,39 +8,33 @@
 
 module Lib where
 
-import Control.Monad
 import Data.Int (Int32)
 import Database.PostgreSQL.Typed
 import Database.PostgreSQL.Typed.Query
-import GHC.Generics
 
 import Connect
 import Schema
 
 import           Data.Proxy
-import Data.Text (Text)
 import qualified Data.Text as T
-import Data.List
 
-import           Mu.GraphQL.Quasi
 import           Mu.GraphQL.Server
 import           Mu.Schema
 import           Mu.Server
 
 useTPGDatabase db -- compile time connection
 
-staticFilesUrl :: Text
+staticFilesUrl :: T.Text
 staticFilesUrl = "https://raw.githubusercontent.com/"
 
-
-coverImagesDirectory :: Text
+coverImagesDirectory :: T.Text
 coverImagesDirectory = "VladimirLogachev/vladimirlogachev.github.io/dev/static/images/library/"
 
 runSingleQuery :: PGSimpleQuery a -> ServerErrorIO [a]
 runSingleQuery query = alwaysOk $ do
-  connection <- pgConnect db -- runtime connection
-  x <- pgQuery connection query
-  pgDisconnect connection
+  conn <- pgConnect db -- runtime connection
+  x <- pgQuery conn query
+  pgDisconnect conn
   pure x
 
 serverMain :: IO ()
@@ -52,11 +46,11 @@ serverMain = do
     (Proxy @Nothing)
 
 type ServiceMapping = '[
-    "Book"   ':-> (Integer, Text, Text, Text)
-  , "Author" ':-> Text
+    "Book"   ':-> (Integer, T.Text, T.Text, T.Text)
+  , "Author" ':-> T.Text
   ]
 
-toGraphqlBook :: (Int32, Text, Text, Text) -> (Integer, Text, Text, Text)
+toGraphqlBook :: (Int32, T.Text, T.Text, T.Text) -> (Integer, T.Text, T.Text, T.Text)
 toGraphqlBook (id, title, coverImage, authorName) = (toInteger id, title, coverImage, authorName)
 
 server :: ServerT ServiceMapping Library ServerErrorIO _
@@ -79,10 +73,10 @@ server = resolver
   where
     {- Author -}
 
-    authorName :: Text -> ServerErrorIO Text
+    authorName :: T.Text -> ServerErrorIO T.Text
     authorName = pure
 
-    authorBooks :: Text -> ServerErrorIO [(Integer, Text, Text, Text)]
+    authorBooks :: T.Text -> ServerErrorIO [(Integer, T.Text, T.Text, T.Text)]
     authorBooks name = fmap toGraphqlBook <$> runSingleQuery [pgSQL|
       SELECT book.id, title, cover_image_source_path, author.name
       FROM book INNER JOIN author ON author.id = book.author_id
@@ -90,7 +84,7 @@ server = resolver
       ORDER BY title
     |]
     
-    allAuthors :: ServerErrorIO [Text]
+    allAuthors :: ServerErrorIO [T.Text]
     allAuthors = runSingleQuery [pgSQL|
       SELECT name FROM author
       ORDER BY name
@@ -106,20 +100,20 @@ server = resolver
 
     {- Book -}
 
-    bookId :: (Integer, Text, Text, Text) -> ServerErrorIO Integer
+    bookId :: (Integer, T.Text, T.Text, T.Text) -> ServerErrorIO Integer
     bookId (id, title, coverImage, authorName) = pure id
 
-    bookTitle :: (Integer, Text, Text, Text) -> ServerErrorIO Text
+    bookTitle :: (Integer, T.Text, T.Text, T.Text) -> ServerErrorIO T.Text
     bookTitle (id, title, coverImage, authorName) = pure title
 
-    bookCoverImageSourcePath :: (Integer, Text, Text, Text) -> ServerErrorIO Text
+    bookCoverImageSourcePath :: (Integer, T.Text, T.Text, T.Text) -> ServerErrorIO T.Text
     bookCoverImageSourcePath (id, title, coverImage, authorName) = 
       pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
 
-    bookAuthor :: (Integer, Text, Text, Text) -> ServerErrorIO Text
+    bookAuthor :: (Integer, T.Text, T.Text, T.Text) -> ServerErrorIO T.Text
     bookAuthor (id, title, coverImage, authorName) = pure authorName
 
-    allBooks :: ServerErrorIO [(Integer, Text, Text, Text)]
+    allBooks :: ServerErrorIO [(Integer, T.Text, T.Text, T.Text)]
     allBooks = fmap toGraphqlBook <$> runSingleQuery [pgSQL| 
       SELECT book.id, title, cover_image_source_path, author.name
       FROM book INNER JOIN author ON author.id = book.author_id

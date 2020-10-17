@@ -1,6 +1,8 @@
 # TODO
 
-- update to modern GHC
+- check if single connection is re-established after server restart
+- add cors middleware
+- add logging
 - update to mu 0.4
 - try to use union types with mu-haskell
 
