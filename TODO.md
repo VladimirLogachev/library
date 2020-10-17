@@ -1,12 +1,17 @@
 # TODO
 
-- check if single connection is re-established after server restart
 - add cors middleware
 - add logging
 - update to mu 0.4
 - try to use union types with mu-haskell
+- `Also, nullable result fields resulting from outer joins are not detected and need to be handled explicitly.` in `postgres-typed`
 
-## New frontend
+## Dive into details
+
+- ObjectMapping, ServiceMapping
+- `alwaysOk`
+
+## New frontends
 
 - Add rating and topics to inputs (however, ignore them)
 - Add all the books to DemoData
@@ -43,6 +48,8 @@
 - add authentication tokens (probably, GitHub auth for admin room)
 - research on Nix
 - research on Hashicorp Vault
+- `parse error: Invalid numeric literal at line 1, column 10` when db is offline. It's 500, but should not contain server-specific details.
+- implement reconnect and/or connection pool to db, because id does not reconnect.
 
 - make sure there is no need in deleting `.stack-work` after schema changes.
   Make it work so that compiler does not rely on cached output and reads the schema each time.
