@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c2f22c7501383af0ec4a5fc312b70132e652907c17ef646238a76d13a93d5081
+-- hash: 77cd52aff6ac217103dc3bcb8ea034f9d881e8d05f3c4c09d0756d486bb874e6
 
 name:           api
 version:        0.1.0.0
@@ -34,6 +34,7 @@ library
   build-depends:
       base >=4.7 && <5
     , conduit
+    , monad-logger
     , mu-graphql
     , mu-rpc
     , mu-schema
@@ -55,6 +56,7 @@ executable api
       api
     , base >=4.7 && <5
     , conduit
+    , monad-logger
     , mu-graphql
     , mu-rpc
     , mu-schema
@@ -77,6 +79,7 @@ test-suite api-test
       api
     , base >=4.7 && <5
     , conduit
+    , monad-logger
     , mu-graphql
     , mu-rpc
     , mu-schema

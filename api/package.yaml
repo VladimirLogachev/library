@@ -22,6 +22,7 @@ dependencies:
 - mu-schema
 - wai-extra
 - warp
+- monad-logger
 
 library:
   source-dirs: src

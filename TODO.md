@@ -1,10 +1,9 @@
 # TODO
 
-- add cors middleware
-- add logging
+- try to use records instead of tuples
+- add logging (figure out how to log)
 - update to mu 0.4
-- try to use union types with mu-haskell
-- `Also, nullable result fields resulting from outer joins are not detected and need to be handled explicitly.` in `postgres-typed`
+
 
 ## Dive into details
 
@@ -59,9 +58,23 @@
 - use distinct types for ids, not just Integer
 - Add Unit type as a custom scalar (instead of meaningless booleans in return of mutations)
 - question: should "create" mutation return id of created item? why and why not?
+- implement reconnect on disconnect with pgReconnect and exponential backoff
+  (fallback: connect and disconnect on each and every query.)
+- `Also, nullable result fields resulting from outer joins are not detected and need to be handled explicitly.` in `postgres-typed`
+- try to use union types with mu-haskell
+- try to use transactions, check success and failure cases
+- try to inspect query set in resolvers
+- use joins for author's books
+- switch to bigserial in sql
+- authorId: ID! - leads to Data.UUID.Types.Internal.UUID, 
+  leads to problem either with deriving or with TH and schema. Not sure.
 
 ## Admin panel
 
 - Proceed with the design
    - admin panel
    - full-page search (query + results)
+
+## Notes
+
+- pgSimpleQueries_ :: ... -> IO ()
