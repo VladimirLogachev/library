@@ -113,7 +113,7 @@ viewBook bookData =
         , p [ style "color" "#212121", style "font-size" "17px", style "margin-bottom" "14px" ]
             [ text bookData.title ]
         , p [ style "color" "#616161", style "font-size" "15px" ]
-            [ text bookData.author ]
+            [ text bookData.author.name ]
         ]
 
 

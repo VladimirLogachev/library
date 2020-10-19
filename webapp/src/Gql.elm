@@ -18,20 +18,30 @@ graphqlUrl =
 
 
 type alias BookData =
-    { title : String
+    { id : Int
+    , title : String
     , coverImageUrl : String
-    , author : String
+    , author : AuthorData
     }
 
 
-authorSelection : SelectionSet String Author
+type alias AuthorData =
+    { id : Int
+    , name : String
+    }
+
+
+authorSelection : SelectionSet AuthorData Author
 authorSelection =
-    Author.name
+    SelectionSet.map2 AuthorData
+        Author.id
+        Author.name
 
 
 bookSelection : SelectionSet BookData Book
 bookSelection =
-    SelectionSet.map3 BookData
+    SelectionSet.map4 BookData
+        Book.id
         Book.title
         Book.coverImageUrl
         (Book.author authorSelection)
