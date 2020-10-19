@@ -1,23 +1,14 @@
 # TODO
 
-- try to use records instead of tuples
-- add logging (figure out how to log)
-- update to mu 0.4
-
-
-## Dive into details
-
-- ObjectMapping, ServiceMapping
-- `alwaysOk`
-
 ## New frontends
 
 - Add rating and topics to inputs (however, ignore them)
-- Add all the books to DemoData
+- Add all the books to DemoData (requires: category, and mutation for adding it)
 
 - Investigate on SCSS + elm (only scoped modules are OK, otherwise - `elm-css`)
 - Add logo
 - Add book catalog component
+- scroll to book details on book select
 
 - Implement topics (schema, back, front)
 - Implement book rating (schema, back, )
@@ -33,7 +24,7 @@
 - add all other features from design to schema, back and front, one by one
 - specify placeholder color for all processable images.
   colors may be derived from picture as is, or may be from list of predefined colors,
-  closest to one from picture. Should be explicitly defined for all processed images. 
+  closest to one from picture. Should be explicitly defined for all processed images.
 
 ## Infrastructure and other
 
@@ -66,15 +57,26 @@
 - try to inspect query set in resolvers
 - use joins for author's books
 - switch to bigserial in sql
-- authorId: ID! - leads to Data.UUID.Types.Internal.UUID, 
+- authorId: ID! - leads to Data.UUID.Types.Internal.UUID,
   leads to problem either with deriving or with TH and schema. Not sure.
+- add rollbar
+- add metrics (prometheus, logzio)
+
+- try to use records instead of tuples in resolvers
+- add logging (figure out how to log)
+- update to mu 0.4
+
+## Dive into details
+
+- ObjectMapping, ServiceMapping
+- `alwaysOk`
 
 ## Admin panel
 
 - Proceed with the design
-   - admin panel
-   - full-page search (query + results)
+  - admin panel
+  - full-page search (query + results)
 
 ## Notes
 
-- pgSimpleQueries_ :: ... -> IO ()
+- pgSimpleQueries\_ :: ... -> IO ()
