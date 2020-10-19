@@ -2,19 +2,19 @@
 
 ## New frontends
 
-- Add rating and topics to inputs (however, ignore them)
-- Add all the books to DemoData (requires: category, and mutation for adding it)
-
-- Investigate on SCSS + elm (only scoped modules are OK, otherwise - `elm-css`)
+- use elm-css - just wrap everything in it
 - Add logo
+- implement routing (2 pages: catalog and editor)
+
+- refactor model
+- Add rating and topics to inputs (however, ignore them) (topicIds are ok rating is a separate relation)
+- Add all the books to DemoData (requires: category, and mutation for adding it)
 - Add book catalog component
 - scroll to book details on book select
 
 - Implement topics (schema, back, front)
 - Implement book rating (schema, back, )
 
-- Implement menu
-- implement routing
 - Add book page
 - Add topics to the book page
 - Add rating to the book page
@@ -65,6 +65,8 @@
 - try to use records instead of tuples in resolvers
 - add logging (figure out how to log)
 - update to mu 0.4
+- experiment with toast notifications
+- experiment with lazy and keyed Html (use different sorting)
 
 ## Dive into details
 

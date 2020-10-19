@@ -8,6 +8,8 @@ import Graphql.Http
 import Html exposing (Html, a, button, div, h1, img, p, text)
 import Html.Attributes exposing (src, style)
 import Html.Events exposing (onClick)
+import Html.Keyed as Keyed
+import Html.Lazy exposing (lazy)
 import Json.Decode as D
 import RemoteData exposing (RemoteData(..))
 import Task exposing (Task)
@@ -26,7 +28,7 @@ main =
         }
 
 
-type alias Model =
+type alias Model = 
     RemoteData (Graphql.Http.Error ()) (List BookData)
 
 
@@ -82,6 +84,9 @@ showError err =
         Graphql.Http.GraphqlError _ graphqlErrors ->
             List.map (\e -> e.message) graphqlErrors |> String.concat
 
+viewKeyedBook : BookData -> (String, Html Msg)
+viewKeyedBook book =
+  ( book.title, lazy viewBook book )
 
 {-| Render a single book
 -}
@@ -104,8 +109,8 @@ viewBook bookData =
             ]
             [ img
                 [ src bookData.coverImageUrl
-                , style "border" "1px solid #D6DBDF"
-                , style "border-radius" "4px"
+                , style "border" ".5px solid #E5E7E9"
+                , style "border-radius" "3px"
                 , style "max-width" "200px"
                 ]
                 []
@@ -125,19 +130,20 @@ showResult res =
         Success books ->
             div
                 [ style "padding" "15px"
-                , style "font-family" "Merriweather, serif"
+                , style "font-family" "Nunito, sans-serif"
                 ]
                 [ h1
-                    [ style "font-weight" "400"
+                    [ style "font-family" "Merriweather, serif"
+                    , style "font-weight" "400"
                     , style "font-size" "40px"
                     , style "margin-bottom" "15px"
                     , style "margin-top" "25px"
                     , style "color" "#212121"
                     ]
                     [ text "Books" ]
-                , div
+                , Keyed.node "div"
                     [ style "display" "flex", style "flex-wrap" "wrap" ]
-                    (List.map viewBook books)
+                    (List.map viewKeyedBook books)
                 ]
 
         Failure err ->
