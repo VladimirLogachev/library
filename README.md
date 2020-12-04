@@ -13,15 +13,15 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 ## Setting up and running
 
 1. `docker-compose up -d` — run PostgreSQL
-1. `cd api`
-   - `stack build --exec api --file-watch` — check schemas, run API server and watch for file changes
-1. `cd webapp`
+1. `cd backend`
+   - `stack build --exec backend --file-watch` — check schemas, run API server and watch for file changes
+1. `cd frontend`
    - `npm i` — install dependencies
    - `npm start` — generate query library from schema, start dev-server, open [http://localhost:8000/](http://localhost:8000/):
 
 ## Notes
 
-1. `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/api` — API production build (later use in dockerfile)
+1. `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/backend` — API production build (later use in dockerfile)
 
 [todo]: TODO.md
 [graphql queries]: docs/queries.md

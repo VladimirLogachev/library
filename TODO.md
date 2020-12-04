@@ -1,12 +1,31 @@
 # TODO
 
-## New frontends
+Each division stands for 1 day of work
 
-- use elm-css - just wrap everything in it
-- Add logo
+---
+- update to the latest mu version
+- add color constants
+- define breakpoints for media type (just come up with something and let it be)
+- define slugs for adding topics and authors (either automatic or manual)
+---
+- use elm-ui for current implementation
+- add dockerfiles and docker-compose, push to dockerhub
+- set up elm-live
 - implement routing (2 pages: catalog and editor)
-
+---
+- Design: States for navigation:
+  - Book not found (reset? or recommendations?)
+  - topic not found
+  - can't load data
+- implement slugs for adding topics and authors (either automatic or manual)
+---
+- implement sitemap.xml generator on backend
+--- 
+- Design admin panel
+- Desing full-page search
+---
 - refactor model
+---
 - Add rating and topics to inputs (however, ignore them) (topicIds are ok rating is a separate relation)
 - Add all the books to DemoData (requires: category, and mutation for adding it)
 - Add book catalog component
@@ -18,7 +37,7 @@
 - Add book page
 - Add topics to the book page
 - Add rating to the book page
-- Add contact mutation + api
+- Add contact mutation + backend
 - Add contact button and modal
 
 - add all other features from design to schema, back and front, one by one
@@ -28,8 +47,8 @@
 
 ## Infrastructure and other
 
-- pass graphqlUrl as a flag to the webapp
-- pass graphqlUrl as a flag to the API
+- pass graphqlUrl as a flag to the frontend
+- pass graphqlUrl as a flag to the backend
 - set up unit tests
 - containerize all the things
 - set up Circle CI
@@ -67,18 +86,3 @@
 - update to mu 0.4
 - experiment with toast notifications
 - experiment with lazy and keyed Html (use different sorting)
-
-## Dive into details
-
-- ObjectMapping, ServiceMapping
-- `alwaysOk`
-
-## Admin panel
-
-- Proceed with the design
-  - admin panel
-  - full-page search (query + results)
-
-## Notes
-
-- pgSimpleQueries\_ :: ... -> IO ()

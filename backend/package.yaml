@@ -1,4 +1,4 @@
-name:                api
+name:                backend
 version:             0.1.0.0
 github:              "vladimirlogachev/library"
 license:             MIT
@@ -28,7 +28,7 @@ library:
   source-dirs: src
 
 executables:
-  api:
+  backend:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -36,10 +36,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - api
+    - backend
 
 tests:
-  api-test:
+  backend-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -47,4 +47,4 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - api
+    - backend

@@ -1,4 +1,4 @@
-# Changelog for api
+# Changelog for backend
 
 ## Unreleased changes
 
