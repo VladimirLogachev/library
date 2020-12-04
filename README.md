@@ -6,6 +6,7 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 
 - [TODO]
 - [GraphQL queries] (curl)
+- [URL structure]
 - [UI design] (Figma, work in progress)
 
 ![app-preview]
@@ -25,6 +26,7 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 
 [todo]: TODO.md
 [graphql queries]: docs/queries.md
+[url structure]: docs/url-structure.md
 [UI design]: https://www.figma.com/file/g61ihnvBgnQtba3vfv8Rxo/Library
 [previous implementation]: https://vladimirlogachev.github.io/#/en/library
 [app-preview]: docs/app-preview.png

@@ -3,13 +3,12 @@
 Each division stands for 1 day of work
 
 ---
-- update to the latest mu version
+- add dockerfiles and docker-compose, push to dockerhub
 - add color constants
 - define breakpoints for media type (just come up with something and let it be)
-- define slugs for adding topics and authors (either automatic or manual)
 ---
+- update to the latest mu version
 - use elm-ui for current implementation
-- add dockerfiles and docker-compose, push to dockerhub
 - set up elm-live
 - implement routing (2 pages: catalog and editor)
 ---
