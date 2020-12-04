@@ -1,6 +1,7 @@
  
 version: "3.7"
 
+# This file is useful for running db in dev mode and running db in compile time
 services:
   db:
     image: postgres:12.4-alpine

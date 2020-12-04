@@ -3,14 +3,13 @@
 Each division stands for 1 day of work
 
 ---
-- add dockerfiles and docker-compose, push to dockerhub
+- update to the latest mu version
+- implement routing for every item in URL structure
+- remove books from author
+---
+- use elm-ui for current implementation
 - add color constants
 - define breakpoints for media type (just come up with something and let it be)
----
-- update to the latest mu version
-- use elm-ui for current implementation
-- set up elm-live
-- implement routing (2 pages: catalog and editor)
 ---
 - Design: States for navigation:
   - Book not found (reset? or recommendations?)
@@ -18,12 +17,13 @@ Each division stands for 1 day of work
   - can't load data
 - implement slugs for adding topics and authors (either automatic or manual)
 ---
+- set up elm-live 
 - implement sitemap.xml generator on backend
 --- 
 - Design admin panel
 - Desing full-page search
 ---
-- refactor model
+- use Nix instead of Docker and compose overrides.
 ---
 - Add rating and topics to inputs (however, ignore them) (topicIds are ok rating is a separate relation)
 - Add all the books to DemoData (requires: category, and mutation for adding it)
