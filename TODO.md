@@ -3,9 +3,13 @@
 Each division stands for 1 day of work
 
 ---
-- update to the latest mu version
+- join sql queries
+- simplify stack file structure
+- return entire book and entire author from mutations
+- add meaningful errors on head usage
+- document design choice on making Author a leaf (and generally prevent infinite-deep selections)
+---
 - implement routing for every item in URL structure
-- remove books from author
 ---
 - use elm-ui for current implementation
 - add color constants

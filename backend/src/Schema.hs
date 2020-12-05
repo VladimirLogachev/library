@@ -2,11 +2,13 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingStrategies #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module Schema where
 
-import Data.Int (Int32, Int64)
+import Data.Int (Int32)
 import qualified Data.Text as T
 import GHC.Generics
 import Mu.GraphQL.Quasi
@@ -14,9 +16,19 @@ import Mu.Schema
 
 graphql "Library" "../schema/schema.graphql" -- compile time schema introspection
 
+{- Author -}
+
 newtype AuthorInput = AuthorInput {name :: T.Text}
   deriving stock (Eq, Show, Generic)
   deriving anyclass (FromSchema LibrarySchema "AuthorInput")
+
+data Author = Author {id :: Integer, name :: T.Text}
+  deriving stock (Eq, Show, Generic)
+
+toGraphqlAuthor :: (Int32, T.Text) -> Author
+toGraphqlAuthor (id, name) = Author {id = toInteger id, name = name}
+
+{- Book -}
 
 data BookInput = BookInput
   { title :: T.Text,
@@ -26,8 +38,19 @@ data BookInput = BookInput
   deriving stock (Eq, Show, Generic)
   deriving anyclass (FromSchema LibrarySchema "BookInput")
 
-toGraphqlBook :: (Int32, T.Text, T.Text, Int32) -> (Integer, T.Text, T.Text, Integer)
-toGraphqlBook (id, title, coverImage, authorId) = (toInteger id, title, coverImage, toInteger authorId)
+data Book = Book
+  { id :: Integer,
+    title :: T.Text,
+    coverImage :: T.Text,
+    authorId :: Integer
+  }
+  deriving stock (Eq, Show, Generic)
 
-toGraphqlAuthor :: (Int32, T.Text) -> (Integer, T.Text)
-toGraphqlAuthor (id, name) = (toInteger id, name)
+toGraphqlBook :: (Int32, T.Text, T.Text, Int32) -> Book
+toGraphqlBook (id, title, coverImage, authorId) =
+  Book
+    { id = toInteger id,
+      title = title,
+      coverImage = coverImage,
+      authorId = toInteger authorId
+    }

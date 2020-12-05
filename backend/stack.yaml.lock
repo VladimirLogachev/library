@@ -12,51 +12,40 @@ packages:
   original:
     hackage: postgresql-typed-0.6.1.2
 - completed:
-    hackage: mu-schema-0.3.0.0@sha256:1281c482e5e55538f818c99048df377e79e715fa837d296acbb9d27ead70c113,1619
+    hackage: graphql-0.11.0.0@sha256:64afbf2bd709307a14ddb837089d9024effd02e7ad9006fcdc421e7f62261c16,3435
     pantry-tree:
-      size: 1061
-      sha256: c5eb54875cadc536814ce00194cdc1bcf4eeed73323adefe70501b0602f75f85
+      size: 2947
+      sha256: 71602e7cd8d7ea1f41d4889673fc2fd9489a3027e2b0c5f6ccdf1d7e4278f7e9
   original:
-    hackage: mu-schema-0.3.0.0
+    hackage: graphql-0.11.0.0
 - completed:
-    hackage: mu-rpc-0.3.0.0@sha256:7a3767b8e656bf800fdfb5f17c887d4bff09a514f0e504d471859c4252ea6aab,1141
-    pantry-tree:
-      size: 378
-      sha256: 2565c04e69e3055f4c9a106247f8225b69c16cd3995ba2fea329ca669b01744f
-  original:
-    hackage: mu-rpc-0.3.0.0
-- completed:
-    hackage: mu-graphql-0.3.0.0@sha256:aa652a52891508a848aacbeb347588bc1e8e7436248a7ea766d03d881120bc38,1794
+    hackage: mu-graphql-0.4.1.0@sha256:3a6367827c6286a3660115a760a08f6fe894455c5480da5ebf2896d395f2a7cc,2649
     pantry-tree:
       size: 914
-      sha256: 4af78430954f34aaf0929b79e4478f5f7091824b68fa651fb9453064d320512d
+      sha256: ddba7c1a54ec9b1764235a079ea7818be1f87313ef5b5348b4a95cec4ab4c432
   original:
-    hackage: mu-graphql-0.3.0.0
+    hackage: mu-graphql-0.4.1.0
 - completed:
-    name: graphql-parser
-    version: 0.1.0.0
-    git: https://github.com/hasura/graphql-parser-hs.git
+    hackage: mu-persistent-0.3.1.0@sha256:5f3ddb1cf916bf188f319224824dbb47d96c66bad70fd5233c8b5af2427ea16a,1213
     pantry-tree:
-      size: 1944
-      sha256: 842a54cedeedd772fa95cc64c6e6241c27fe39730be867876933128212be3428
-    commit: 1380495a7b3269b70a7ab3081d745a5f54171a9c
+      size: 276
+      sha256: 41c67d140af81b735d2fc2055ad66feeee280403ee68630f0747ef8a22578183
   original:
-    git: https://github.com/hasura/graphql-parser-hs.git
-    commit: 1380495a7b3269b70a7ab3081d745a5f54171a9c
+    hackage: mu-persistent-0.3.1.0
 - completed:
-    hackage: stm-containers-1.1.0.4@sha256:f83a683357b6e3b1dda3e70d2077a37224ed534df1f74c4e11f3f6daa7945c5b,3248
+    hackage: mu-rpc-0.4.0.1@sha256:24f2516926a669f860b59d17ed8af6d0704361b5abed30f4e7eb80fb685ae8bc,1383
     pantry-tree:
-      size: 761
-      sha256: 059c5a2d657d392aca0a887648f57380d6321734dc8879c056a44d4414308ac6
+      size: 445
+      sha256: 235597681d97b0789bc7437c752658f2585248d889a289c09532e3e535640cfa
   original:
-    hackage: stm-containers-1.1.0.4
+    hackage: mu-rpc-0.4.0.1
 - completed:
-    hackage: stm-hamt-1.2.0.4@sha256:7957497c022554b7599e790696d1a3e56359ad99e5da36a251894c626ca1f60a,3970
+    hackage: mu-schema-0.3.1.1@sha256:43d4ed0425e91f4d24c6f4b43a8bbd8f95f0ca8f50a09d541d0741064db7355f,1933
     pantry-tree:
-      size: 1009
-      sha256: d9a8be48da86bd4a2ba9d52ea29b9a74f1b686d439ba1bbfba04ab1a002391da
+      size: 1061
+      sha256: a84b45065c079223b2f9ced4fc02d593451c2143a02fe65933a7a67f1c1bbfad
   original:
-    hackage: stm-hamt-1.2.0.4
+    hackage: mu-schema-0.3.1.1
 - completed:
     hackage: primitive-extras-0.8@sha256:fca0310150496867f5b9421fe1541ecda87fae17eae44885a29f9c52dd00c8ff,2963
     pantry-tree:
@@ -71,9 +60,23 @@ packages:
       sha256: c882dca2a96b98d02b0d21875b651edb11ac67d90e736c0de7a92c410a19eb7f
   original:
     hackage: primitive-unlifted-0.1.3.0
+- completed:
+    hackage: stm-containers-1.1.0.4@sha256:f83a683357b6e3b1dda3e70d2077a37224ed534df1f74c4e11f3f6daa7945c5b,3248
+    pantry-tree:
+      size: 761
+      sha256: 059c5a2d657d392aca0a887648f57380d6321734dc8879c056a44d4414308ac6
+  original:
+    hackage: stm-containers-1.1.0.4
+- completed:
+    hackage: stm-hamt-1.2.0.4@sha256:7957497c022554b7599e790696d1a3e56359ad99e5da36a251894c626ca1f60a,3970
+    pantry-tree:
+      size: 1009
+      sha256: d9a8be48da86bd4a2ba9d52ea29b9a74f1b686d439ba1bbfba04ab1a002391da
+  original:
+    hackage: stm-hamt-1.2.0.4
 snapshots:
 - completed:
-    size: 532172
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/18.yaml
-    sha256: 4f2a092c6f4869854e8d7435ab98ce5157c641022c3cbfc4c4614ff3db752e62
-  original: lts-16.18
+    size: 532414
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/22.yaml
+    sha256: e483fb88549fc0f454c190979bf35ac91c7aceff2c0e71e7d8edd11842d772d8
+  original: lts-16.22

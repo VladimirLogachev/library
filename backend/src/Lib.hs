@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PartialTypeSignatures #-}
 {-# LANGUAGE QuasiQuotes #-}
@@ -23,6 +24,7 @@ import Mu.Server
 import Network.Wai.Handler.Warp (run)
 import Network.Wai.Middleware.AddHeaders (addHeaders)
 import Schema
+import Prelude hiding (id)
 
 useTPGDatabase db -- compile time connection
 
@@ -53,12 +55,12 @@ serverMain = do
           (Proxy @( 'Just "Mutation"))
           (Proxy @Nothing)
 
-type ServiceMapping =
-  '[ "Book" ':-> (Integer, T.Text, T.Text, Integer),
-     "Author" ':-> (Integer, T.Text)
+type ObjectMapping =
+  '[ "Book" ':-> Book,
+     "Author" ':-> Author
    ]
 
-server :: PGConnection -> ServerT ServiceMapping Library ServerErrorIO _
+server :: PGConnection -> ServerT ObjectMapping i Library ServerErrorIO _
 server conn =
   resolver
     ( object @"Book"
@@ -69,8 +71,7 @@ server conn =
         ),
       object @"Author"
         ( field @"id" authorId,
-          field @"name" authorName,
-          field @"books" authorBooks
+          field @"name" authorName
         ),
       object @"Query"
         ( method @"authors" allAuthors,
@@ -82,92 +83,67 @@ server conn =
         )
     )
   where
+    query = runQuery conn
     {- Author -}
 
-    authorId :: (Integer, T.Text) -> ServerErrorIO Integer
-    authorId (id, name) = pure id
+    authorId :: Author -> ServerErrorIO Integer
+    authorId a = pure $ id (a :: Author)
 
-    authorName :: (Integer, T.Text) -> ServerErrorIO T.Text
-    authorName (id, name) = pure name
+    authorName :: Author -> ServerErrorIO T.Text
+    authorName a = pure $ name (a :: Author)
 
-    authorBooks :: (Integer, T.Text) -> ServerErrorIO [(Integer, T.Text, T.Text, Integer)]
-    authorBooks (id, name) =
-      fmap toGraphqlBook
-        <$> runQuery
-          conn
-          [pgSQL|
-      SELECT book.id, title, cover_image_source_path, author.id
-      FROM book INNER JOIN author ON author.id = book.author_id
-      WHERE name = ${name}
-      ORDER BY title
-    |]
-
-    allAuthors :: ServerErrorIO [(Integer, T.Text)]
-    allAuthors =
-      fmap toGraphqlAuthor
-        <$> runQuery
-          conn
-          [pgSQL|
-      SELECT id, name FROM author
-      ORDER BY name
-    |]
+    allAuthors :: ServerErrorIO [Author]
+    allAuthors = fmap toGraphqlAuthor <$> query [pgSQL| SELECT id, name FROM author ORDER BY name |]
 
     createAuthor :: AuthorInput -> ServerErrorIO Integer
-    createAuthor AuthorInput {name = name} = do
+    createAuthor (AuthorInput name) = do
+      -- TODO: readable error message
       Just x : _ <-
-        runQuery
-          conn
-          [pgSQL|
-        INSERT INTO author (name) VALUES (${name})
-        RETURNING author.id
-      |] ::
+        query
+          [pgSQL| INSERT INTO author (name) VALUES (${name}) RETURNING author.id |] ::
           ServerErrorIO [Maybe Int32]
       return $ toInteger x
 
     {- Book -}
 
-    bookId :: (Integer, T.Text, T.Text, Integer) -> ServerErrorIO Integer
-    bookId (id, title, coverImage, authorId) = pure id
+    bookId :: Book -> ServerErrorIO Integer
+    bookId b = pure $ id (b :: Book)
 
-    bookTitle :: (Integer, T.Text, T.Text, Integer) -> ServerErrorIO T.Text
-    bookTitle (id, title, coverImage, authorId) = pure title
+    bookTitle :: Book -> ServerErrorIO T.Text
+    bookTitle b = pure $ title (b :: Book)
 
-    bookCoverImageSourcePath :: (Integer, T.Text, T.Text, Integer) -> ServerErrorIO T.Text
-    bookCoverImageSourcePath (id, title, coverImage, authorId) =
-      pure $ staticFilesUrl <> coverImagesDirectory <> coverImage
+    bookCoverImageSourcePath :: Book -> ServerErrorIO T.Text
+    bookCoverImageSourcePath b =
+      pure $ staticFilesUrl <> coverImagesDirectory <> coverImage (b :: Book)
 
-    bookAuthor :: (Integer, T.Text, T.Text, Integer) -> ServerErrorIO (Integer, T.Text)
-    bookAuthor (id, title, coverImage, authorId) = do
-      x : _ <-
-        fmap toGraphqlAuthor
-          <$> runQuery
-            conn
-            [pgSQL|
-        SELECT id, name FROM author
-        WHERE id = ${fromIntegral $ authorId :: Int32}
-      |]
-      return x
+    bookAuthor :: Book -> ServerErrorIO Author
+    bookAuthor b =
+      toGraphqlAuthor . head
+        <$> query
+          [pgSQL| 
+            SELECT id, name FROM author 
+            WHERE id = ${ fromIntegral $ id (b :: Book) :: Int32 } 
+          |]
 
-    allBooks :: ServerErrorIO [(Integer, T.Text, T.Text, Integer)]
+    allBooks :: ServerErrorIO [Book]
     allBooks =
       fmap toGraphqlBook
-        <$> runQuery
-          conn
+        <$> query
           [pgSQL|
-      SELECT book.id, title, cover_image_source_path, author.id
-      FROM book INNER JOIN author ON author.id = book.author_id
-      ORDER BY title
-    |]
+            SELECT book.id, title, cover_image_source_path, author.id
+            FROM book INNER JOIN author ON author.id = book.author_id
+            ORDER BY title
+          |]
 
     createBook :: BookInput -> ServerErrorIO Integer
-    createBook BookInput {title = title, coverImageSourcePath = coverImageSourcePath, authorId = authorId} = do
+    createBook (BookInput title coverImageSourcePath authorId) = do
+      -- TODO: readable error message
       Just x : _ <-
-        runQuery
-          conn
+        query
           [pgSQL|
-        INSERT INTO book (title, cover_image_source_path, author_id)
-        VALUES (${title}, ${coverImageSourcePath}, ${fromIntegral $ authorId :: Int32})
-        RETURNING book.id
-      |] ::
+            INSERT INTO book (title, cover_image_source_path, author_id)
+            VALUES (${title}, ${coverImageSourcePath}, ${fromIntegral $ authorId :: Int32})
+            RETURNING book.id
+          |] ::
           ServerErrorIO [Maybe Int32]
       return $ toInteger x
