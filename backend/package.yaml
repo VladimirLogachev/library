@@ -13,16 +13,19 @@ description:         Please see the README on GitHub at <https://github.com/vlad
 
 dependencies:
 - base >= 4.7 && < 5
-- postgresql-typed
-- network
+- bytestring
 - conduit
-- text
-- mu-rpc
+- containers
+- monad-logger
+- mtl
 - mu-graphql
+- mu-rpc
 - mu-schema
+- network
+- postgresql-typed
+- text
 - wai-extra
 - warp
-- monad-logger
 
 library:
   source-dirs: src

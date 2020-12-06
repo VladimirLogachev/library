@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 27594bd95b5adf7465d61952386492b691f9b8146f2f266e1f2df7b7cff5f9d9
+-- hash: 2d4f62f31a9dc3ec4a3faaf6fe770fcc8ab990bdde924a1dd40a5841899bafda
 
 name:           backend
 version:        0.1.0.0
@@ -33,8 +33,11 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , bytestring
     , conduit
+    , containers
     , monad-logger
+    , mtl
     , mu-graphql
     , mu-rpc
     , mu-schema
@@ -55,8 +58,11 @@ executable backend
   build-depends:
       backend
     , base >=4.7 && <5
+    , bytestring
     , conduit
+    , containers
     , monad-logger
+    , mtl
     , mu-graphql
     , mu-rpc
     , mu-schema
@@ -78,8 +84,11 @@ test-suite backend-test
   build-depends:
       backend
     , base >=4.7 && <5
+    , bytestring
     , conduit
+    , containers
     , monad-logger
+    , mtl
     , mu-graphql
     , mu-rpc
     , mu-schema

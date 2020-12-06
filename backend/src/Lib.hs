@@ -11,9 +11,12 @@
 module Lib where
 
 import Connect
-import Control.Monad.IO.Class (liftIO)
+import Control.Exception (try)
+import Control.Monad.Except
 import Control.Monad.Logger
+import qualified Data.ByteString.Char8 as BSC
 import Data.Int (Int32)
+import qualified Data.Map.Lazy as Map
 import Data.Proxy
 import qualified Data.Text as T
 import Database.PostgreSQL.Typed
@@ -34,8 +37,14 @@ staticFilesUrl = "https://raw.githubusercontent.com/VladimirLogachev/vladimirlog
 coverImagesDirectory :: T.Text
 coverImagesDirectory = "images/library/"
 
-runQuery :: PGConnection -> PGSimpleQuery a -> ServerErrorIO [a]
-runQuery conn query = alwaysOk $ pgQuery conn query
+defaultError :: ServerError
+defaultError = ServerError Internal "Something went wrong"
+
+includesText :: BSC.ByteString -> PGError -> Bool
+includesText subStr = BSC.isInfixOf subStr . extractMessage
+
+extractMessage :: PGError -> BSC.ByteString
+extractMessage = Map.findWithDefault "" 'M' . pgErrorFields
 
 serverMain :: IO ()
 serverMain = do
@@ -46,7 +55,7 @@ serverMain = do
           ]
   runStdoutLoggingT $ do
     conn <- liftIO $ pgConnect db
-    liftIO $ putStrLn "starting GraphQL server on port 8080"
+    logInfoN "starting GraphQL server on port 8080"
     liftIO $
       run 8080 . hm $
         graphQLApp
@@ -83,7 +92,12 @@ server conn =
         )
     )
   where
-    query = runQuery conn
+    runQuery :: PGSimpleQuery a -> ExceptT PGError IO [a]
+    runQuery = ExceptT . try . pgQuery conn
+
+    simpleQuery :: PGSimpleQuery a -> ExceptT ServerError IO [a]
+    simpleQuery = withExceptT (const defaultError) . runQuery
+
     {- Author -}
 
     authorId :: Author -> ServerErrorIO Integer
@@ -93,16 +107,20 @@ server conn =
     authorName a = pure $ name (a :: Author)
 
     allAuthors :: ServerErrorIO [Author]
-    allAuthors = fmap toGraphqlAuthor <$> query [pgSQL| SELECT id, name FROM author ORDER BY name |]
+    allAuthors = fmap toGraphqlAuthor <$> simpleQuery [pgSQL| SELECT id, name FROM author ORDER BY name |]
 
     createAuthor :: AuthorInput -> ServerErrorIO Integer
-    createAuthor (AuthorInput name) = do
-      -- TODO: readable error message
-      Just x : _ <-
-        query
-          [pgSQL| INSERT INTO author (name) VALUES (${name}) RETURNING author.id |] ::
-          ServerErrorIO [Maybe Int32]
-      return $ toInteger x
+    createAuthor (AuthorInput name) =
+      let errorHandler e
+            | includesText "unique_author_name" e = ServerError Invalid "Author with such name already exists."
+            | otherwise = defaultError
+       in do
+            Just authorId : _ <-
+              withExceptT errorHandler $
+                runQuery
+                  [pgSQL| INSERT INTO author (name) VALUES (${name}) RETURNING author.id |] ::
+                ServerErrorIO [Maybe Int32]
+            return $ toInteger authorId
 
     {- Book -}
 
@@ -117,33 +135,31 @@ server conn =
       pure $ staticFilesUrl <> coverImagesDirectory <> coverImage (b :: Book)
 
     bookAuthor :: Book -> ServerErrorIO Author
-    bookAuthor b =
-      toGraphqlAuthor . head
-        <$> query
-          [pgSQL| 
-            SELECT id, name FROM author 
-            WHERE id = ${ fromIntegral $ id (b :: Book) :: Int32 } 
-          |]
+    bookAuthor b = pure $ author (b :: Book)
 
     allBooks :: ServerErrorIO [Book]
     allBooks =
       fmap toGraphqlBook
-        <$> query
+        <$> simpleQuery
           [pgSQL|
-            SELECT book.id, title, cover_image_source_path, author.id
+            SELECT book.id, title, cover_image_source_path, author.id, author.name
             FROM book INNER JOIN author ON author.id = book.author_id
             ORDER BY title
           |]
 
     createBook :: BookInput -> ServerErrorIO Integer
-    createBook (BookInput title coverImageSourcePath authorId) = do
-      -- TODO: readable error message
-      Just x : _ <-
-        query
-          [pgSQL|
+    createBook (BookInput title coverImageSourcePath authorId) =
+      let errorHandler e
+            | includesText "unique_book_title_per_author" e = ServerError Invalid "Book with such title already exists for this author."
+            | otherwise = defaultError
+       in do
+            Just bookId : _ <-
+              withExceptT errorHandler $
+                runQuery
+                  [pgSQL|
             INSERT INTO book (title, cover_image_source_path, author_id)
             VALUES (${title}, ${coverImageSourcePath}, ${fromIntegral $ authorId :: Int32})
             RETURNING book.id
           |] ::
-          ServerErrorIO [Maybe Int32]
-      return $ toInteger x
+                ServerErrorIO [Maybe Int32]
+            pure $ toInteger bookId

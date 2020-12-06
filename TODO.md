@@ -1,13 +1,15 @@
 # TODO
 
-Each division stands for 1 day of work
+Each division stands for 1 day of work (hopefully)
+
+## Week 1 - make the thing work on my pc
 
 ---
-- join sql queries
-- simplify stack file structure
+- add all data types to graphql schema
 - return entire book and entire author from mutations
-- add meaningful errors on head usage
-- document design choice on making Author a leaf (and generally prevent infinite-deep selections)
+- move toGraphqlBook to resolver itself 
+- add all data types to sql
+- specify mutations for transactional creating new things
 ---
 - implement routing for every item in URL structure
 ---
@@ -20,12 +22,20 @@ Each division stands for 1 day of work
   - topic not found
   - can't load data
 - implement slugs for adding topics and authors (either automatic or manual)
----
-- set up elm-live 
-- implement sitemap.xml generator on backend
 --- 
 - Design admin panel
 - Desing full-page search
+
+## Week 2 - polish, test, ci, deploy
+
+---
+- set up elm-live 
+- implement sitemap.xml generator on backend
+- add default error handler to prevent plain text (graphql-incompatible) responses
+---
+- decide how to deal with db disconnects - shutdown an app or implement exponential backoff retry.
+- simplify stack file structure
+- return meaningful error messages
 ---
 - use Nix instead of Docker and compose overrides.
 ---

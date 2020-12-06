@@ -24,6 +24,16 @@ Key feature: compile-time typecheck against PostgreSQL and GraphQL schemas and (
 
 1. `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/backend` — API production build (later use in dockerfile)
 
+## Design choices and tradeoffs
+
+1. Mu-haskell does not join sql queries, so I decided to exclude books from Authors.
+   By making this tradeoff I can manually join sql queries.
+1. GraphQL currently does not support input unions. But I want admin app to create book either with new author, or with existing one.
+   What could I do:
+   - Accept nullable fields in inputs: `newAuthor`, `existingAuthorId`, and then choose first filled (aka workaround input unions)
+   - Decide on frontend and compose tasks that create author before book, if necessary (but it is not transactional which could be very confusing in case of any failure and retry)
+   - Provide different mutations for such cases, and let frontend decide. This means enough typesafety, ability to make a proper SQL transaction and little work on frontend. This is my choice. 
+
 [todo]: TODO.md
 [graphql queries]: docs/queries.md
 [url structure]: docs/url-structure.md

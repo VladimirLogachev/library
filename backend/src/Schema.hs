@@ -42,15 +42,15 @@ data Book = Book
   { id :: Integer,
     title :: T.Text,
     coverImage :: T.Text,
-    authorId :: Integer
+    author :: Author
   }
   deriving stock (Eq, Show, Generic)
 
-toGraphqlBook :: (Int32, T.Text, T.Text, Int32) -> Book
-toGraphqlBook (id, title, coverImage, authorId) =
+toGraphqlBook :: (Int32, T.Text, T.Text, Int32, T.Text) -> Book
+toGraphqlBook (id, title, coverImage, authorId, authorName) =
   Book
     { id = toInteger id,
       title = title,
       coverImage = coverImage,
-      authorId = toInteger authorId
+      author = toGraphqlAuthor (authorId, authorName)
     }

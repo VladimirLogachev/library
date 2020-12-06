@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS author (
     id serial NOT NULL PRIMARY KEY,
     "name" varchar NOT NULL,
-    UNIQUE ("name")
+    CONSTRAINT unique_author_name UNIQUE ("name")
 );
 
 COMMENT ON TABLE author IS 'Book authors';
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS book (
     "title" varchar NOT NULL,
     "cover_image_source_path" varchar NOT NULL,
     "author_id" integer REFERENCES author (id) NOT NULL,
-    UNIQUE ("title", "author_id")
+    CONSTRAINT unique_book_title_per_author UNIQUE ("title", "author_id")
 );
 
 COMMENT ON TABLE book IS 'Books';
