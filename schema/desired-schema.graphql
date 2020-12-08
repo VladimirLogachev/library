@@ -1,0 +1,141 @@
+type Query {
+  authors: [Author!]!
+  
+  books: [Book!]!
+
+  """ 
+  показать данные конкретного автора
+  показать данные топика
+  показать данные книги
+
+  показать книги по автору
+  показать книги по теме или нескольким темам
+  показать все книги вообще
+
+  показать все темы, в которых есть книги
+  показать все темы вообще
+  показать всех авторов, у которых есть книги
+  показать всех авторов вообще
+  
+  фильтры: Язык (несколько), Topic (несколько), наличие 
+
+  поиск: название темы, имя автора, название книги (разные запросы) (сортировка по оценке, хотя хз)
+  а ещё картинки могут обрабатываться, иметь цвет, размер и ваще.
+
+
+  Принять решение: фильтры... аффектят выполнение всех запросов и переходов между страницами? не только поиск?
+
+  В будущем: отдельная мутация, которая аплоадить и удаляет картинки (требует интеграции с S3 API, тогда можно старые обложки грохать и всё переделывать как надо)
+
+
+Админские квери: показать очередь на книгу
+Показать книги на руках и сколько они ходят
+Поставить человека в очередь или убрать из очереди (на основании заявки с контактами)
+Отчёт о том, сколько какую книгу читают
+Отчёт о том, какие читатели читали книгу
+Заметки о факте чтения книги человеком (? 0Ы)
+
+
+
+
+
+
+
+
+   """
+}
+
+
+type Mutation {
+  signIn(username: String!, password: String!): String! # токен хуетокен
+  signOut: Unit!
+
+  createTopic(topic: TopicInput): Topic!
+  editTopic(topicId: Int!, topic: TopicInput!): Topic!
+  bulkAssignTopic(topicId: Int!, bookIds: [Int!]!): Unit! # Usefule for newly created topics
+
+  createAuthor(author: AuthorInput!): Author!
+  editAuthor(authorId: Int!, author: AuthorInput!): Author!
+
+  createBook(book: BookInput!, bookAuthorRelation: BookAuthorRelation!): Book!
+  editBook(bookId: Int!, book: BookInput!, bookAuthorRelation: BookAuthorRelation!): Book!
+  rateBook(bookId: Int!, rating: Rating!): Unit!
+  # setBookAvailability(bookId: Int!, availability: Availability!): Unit! # Это не так делается. Это отдельные ивенты. Availability выводится из них как стейт. Например, книгу вернули, но если за ней очередь, то ничё не происходит.
+
+  submitBookAvailabilityInterest(bookId: Int, availabilityInterest: AvailabilityInterestInput!): Unit!
+
+  """ 
+  Сервисные мутации: bulk insert, bulk change availability
+  Мутации на изменение наличия
+  Мутации на изменение состава тем
+  """
+}
+
+
+""" Availability """
+
+enum Availability {
+  Available
+  Busy
+  WhateverElse
+}
+
+
+
+""" Rating """
+enum Rating {
+  Excellent
+  Good
+  Normal
+  Bad
+  Unknown
+}
+
+""" Topic """
+
+type Topic {
+  id: Int!
+  label: String!
+}
+
+input TopicInput {
+  label: String!
+}
+
+""" Author """
+
+type Author {
+  id: Int!
+  name: String!
+}
+
+input AuthorInput {
+  name: String!
+}
+
+""" Book """
+
+type Book {
+  id: Int!
+  title: String!
+  coverImageUrl: String!
+  author: Author!
+  externalUrl: String
+}
+
+input BookInput {
+  title: String!
+  coverImageSourcePath: String!
+  topicIds: [Int!]! # Set, unique.
+}
+
+# Input union: parse one of (first successful) or fail as Invalid
+input BookAuthorRelation {
+  existingAuthorId: Int
+  newAuthor: AuthorInput
+}
+
+input AvailabilityInterestInput {
+  name: String!
+  contactInfo: String!
+}
