@@ -1,12 +1,17 @@
 type Query {
+  author(authorId: Int!): Author!
   authors: [Author!]!
+  # Default behaviour is return all
+  # But there will be filtration criteria
   
+  book(bookId: Int!): Book!
   books: [Book!]!
-
+  books for main = all books
+  books for author page = all books with given authorId
+  books for topics = all books with given list of topics
+  # the problem is to 
+  topic(topicId: Int!)
   """ 
-  показать данные конкретного автора
-  показать данные топика
-  показать данные книги
 
   показать книги по автору
   показать книги по теме или нескольким темам
@@ -47,12 +52,12 @@ type Query {
 
 
 type Mutation {
-  signIn(username: String!, password: String!): String! # токен хуетокен
+  signIn(username: String!, password: String!): String! # returns token 
   signOut: Unit!
 
   createTopic(topic: TopicInput): Topic!
   editTopic(topicId: Int!, topic: TopicInput!): Topic!
-  bulkAssignTopic(topicId: Int!, bookIds: [Int!]!): Unit! # Usefule for newly created topics
+  assignTopic(topicId: Int!, bookIds: [Int!]!): Unit! # Usefule for newly created topics
 
   createAuthor(author: AuthorInput!): Author!
   editAuthor(authorId: Int!, author: AuthorInput!): Author!
@@ -86,7 +91,7 @@ enum Availability {
 enum Rating {
   Excellent
   Good
-  Normal
+  Neutral
   Bad
   Unknown
 }
