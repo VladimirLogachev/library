@@ -82,10 +82,35 @@ type Mutation {
 enum Availability {
   Available
   Busy
-  WhateverElse
 }
 
+union DetailedAvailability {
+  BookAvailable
+  BookGivenToSomeone
+  BookReserved
+  BookAnnounced
+}
 
+type BookAvailable = { 
+  unit: Unit 
+}
+
+type BookGivenToSomeone {
+  person: Person
+  givenDate: Date
+  lastContacted: Date
+  contactAgainDate: Date
+}
+
+type BookReserved {
+  person: Person
+  bookTransferTimestamp: Date
+  lastContacted: Date
+}
+
+type BookAnnounced {
+  unit: Unit
+}
 
 """ Rating """
 enum Rating {

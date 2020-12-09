@@ -1,4 +1,4 @@
-INSERT INTO author (name)
+INSERT INTO authors (name)
 VALUES
   ('Author 1'),
   ('Author 2'),
@@ -14,7 +14,7 @@ VALUES
   ('Author 12'),
   ('Author 13');
 
-INSERT INTO book ( title, cover_image_source_path, author_id )
+INSERT INTO books ( title, cover_image_source_path, author_id )
 VALUES
   ('Book 1', 'connecting_dots.png', 1),
   ('Book 2', 'connecting_dots.png', 2),
@@ -25,7 +25,7 @@ VALUES
   ('Book 7', 'connecting_dots.png', 7),
   ('Book 8', 'connecting_dots.png', 8);
 
-INSERT INTO topic (name)
+INSERT INTO topics (name)
 VALUES
   ('Topic 1'),
   ('Topic 2'),
@@ -41,13 +41,24 @@ VALUES
   ('Topic 12'),
   ('Topic 13');
 
-INSERT INTO rating (name)
+INSERT INTO ratings (name)
 VALUES
   ('Excellent 1'),
   ('Good 2'),
   ('Neutral 3'),
   ('Bad 4');
 
+
+INSERT INTO persons ( name, contact_info )
+VALUES
+  ('Person 1', ''),
+  ('Person 2', ''),
+  ('Person 3', ''),
+  ('Person 4', ''),
+  ('Person 5', ''),
+  ('Person 6', ''),
+  ('Person 7', ''),
+  ('Person 8', '');
 
 INSERT INTO r_book_rating ( book_id, rating_id )
 VALUES
@@ -76,4 +87,15 @@ VALUES
   (7, 3),
   (8, 3);
 
+
+INSERT INTO books_given ( book_id, person_id)
+VALUES
+  (1, 1),
+  (2, 6),
+  (3, 3),
+  (4, 4),
+  (5, 1),
+  (6, 3),
+  (7, 3),
+  (8, 3);
 

@@ -5,10 +5,18 @@ Each division stands for 1 day of work (hopefully)
 ## Week 1 - make the thing work on my pc
 
 ---
+- add journal table (events table). Not likely events will be parametrized (in this case there will be separate tables). Or maybe events will be stored in separate tables and united by a single view
+- create views
+- check again
+- Add support for multiple authors (but first check how postgres-typed will react to arrays)
+- make all resolvers unimplemented
+- adjust graphql schema (no optional filters for now, separate queries)
+- implement query resolvers 1 by 1
+- make frontend use the new data
+---
 - add all data types to graphql schema
 - return entire book and entire author from mutations
 - move toGraphqlBook to resolver itself 
-- add all data types to sql
 - specify mutations for transactional creating new things
 ---
 - implement routing for every item in URL structure
