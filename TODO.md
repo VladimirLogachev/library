@@ -12,6 +12,7 @@ Each division stands for 1 day of work (hopefully)
 - make all resolvers unimplemented
 - adjust graphql schema (no optional filters for now, separate queries)
 - implement query resolvers 1 by 1
+- I don't even know how to deal with books that were given away as a gift or lost somehow. 
 - make frontend use the new data
 ---
 - add all data types to graphql schema

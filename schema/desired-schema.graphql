@@ -40,8 +40,26 @@ type Query {
 Отчёт о том, какие читатели читали книгу
 Заметки о факте чтения книги человеком (? 0Ы)
 
+Availability Events (immutable):
+  - Человек взял книгу
+  - Я разговаривал с человеком
+    - Человек пообещал отдать книгу
+  - человек встал в очередь на книгу
 
 
+Сеанс пользования - это когда книга передана человеку. События коммуникации (договорённости о возврате) опираются на эти факты
+
+Книжные события (Становление в очередь не рассматривается, потому что это вилами по воде)
+book_id person_id timestamp event-type (BookTaken | BookReturned | BookReserved | ReserveCanceled | BookRemovedFromLibrary | BookMaybeLost)
+
+
+
+
+События о коммуникации
+
+
+Мета-события
+  fact_id ()
 
 
 
@@ -65,14 +83,12 @@ type Mutation {
   createBook(book: BookInput!, bookAuthorRelation: BookAuthorRelation!): Book!
   editBook(bookId: Int!, book: BookInput!, bookAuthorRelation: BookAuthorRelation!): Book!
   rateBook(bookId: Int!, rating: Rating!): Unit!
-  # setBookAvailability(bookId: Int!, availability: Availability!): Unit! # Это не так делается. Это отдельные ивенты. Availability выводится из них как стейт. Например, книгу вернули, но если за ней очередь, то ничё не происходит.
+  # setBookAvailability(bookId: Int!, availability: Availability!): Unit! # Это не так делается. Это отдельные ивенты. Availability выводится из них как стейт. 
 
   submitBookAvailabilityInterest(bookId: Int, availabilityInterest: AvailabilityInterestInput!): Unit!
 
   """ 
   Сервисные мутации: bulk insert, bulk change availability
-  Мутации на изменение наличия
-  Мутации на изменение состава тем
   """
 }
 

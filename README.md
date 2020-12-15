@@ -29,12 +29,14 @@ PGPassword=postgres \
   && psql -f 2.populate.sql -U postgres -d library
 ```
 1. `stack build --ghc-options -O2 --copy-bins && ~/.local/bin/backend` — API production build (later use in dockerfile)
-
 ## Design choices and tradeoffs
+
+1. Book states: Available, Taken, Reserved, ProbablyLost, RemovedFromLibrary
+1. Domain events: BookAdded, BookReturned, BookTaken, BookReservedFor_aka_BookInTransition, BookReserveCancelled, BookAddedToWishlist_aka_preventAvailability_after_return, BookMarkedAsProbablyLost, BookMarked
 
 1. Database does not enforce te fact that a book has at least one author. Instead, it relies on domain validation in resolvers.
 1. Mu-haskell does not join sql queries, so I decided to exclude books from Authors.
-   By making this tradeoff I can manually join sql queries.
+   By making this tradeoff I can manually join sql queries. sdfasdf
 1. GraphQL currently does not support input unions. But I want admin app to create book either with new author, or with existing one.
    What could I do:
    - Accept nullable fields in inputs: `newAuthor`, `existingAuthorId`, and then choose first filled (aka workaround input unions)
